@@ -16,18 +16,24 @@
      BASE & RESET
      ======================================== */
   html, body {
-    min-height: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 
   body {
     margin: 0;
     font-family: 'Courier New', monospace !important;
-    overflow-x: hidden;
-    overflow-y: auto;
   }
 
-  input, textarea {
+  input:not([type="checkbox"]), 
+  textarea,
+  .wheel-option-name[contenteditable],
+  .saved-wheel-name[contenteditable] {
     cursor: url('https://64.media.tumblr.com/3233d9c68709a4e2127c82d2a123fd31/tumblr_inline_t5l2vhPEqC1yrz37b_500.png') 32 32, auto;
+  }
+
+  input[type="checkbox"] {
+    cursor: pointer;
   }
 
   /* Accessibilité : masquer visuellement mais garder pour les lecteurs d'écran */
@@ -137,9 +143,10 @@
      LAYOUT PRINCIPAL
      ======================================== */
   .app-layout {
-    min-height: 100vh;
-    padding: clamp(8px, 2vw, 24px);
+    height: 100vh;
+    padding: clamp(8px, 2vw, 24px) clamp(16px, 3vw, 40px);
     box-sizing: border-box;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     margin: auto;
@@ -157,22 +164,34 @@
 
   .main-content {
     display: flex;
-    gap: 20px;
+    gap: 40px;
     width: 100%;
     max-width: 1980px;
     margin: 0 auto;
-    flex: 1;
-    align-items: stretch;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
   }
 
   /* Panneaux latéraux */
   .side-panel {
     height: fit-content;
-    margin: auto;
+    max-height: calc(100vh - 200px);
+    margin: 0;
     padding: 20px;
     box-sizing: border-box;
     width: 350px;
     max-width: 350px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .side-panel::-webkit-scrollbar {
+    display: none;
   }
 
   /* Panneau central */
@@ -181,7 +200,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 40px;
+    height: 100%;
   }
 
   /* ========================================
@@ -235,11 +257,52 @@
   /* ========================================
      RESPONSIVE DESIGN
      ======================================== */
+  @media (min-width: 1600px) {
+    #wheel-wrapper,
+    .wheel-wrapper {
+      width: 800px;
+      height: 800px;
+      max-width: min(90vw, 70vh);
+      max-height: min(90vw, 70vh);
+    }
+
+    #needle,
+    .needle {
+      width: 280px;
+      max-width: 40vw;
+    }
+
+    .button-spin-it {
+      width: 320px;
+      height: 130px;
+    }
+
+    .side-panel {
+      width: 400px;
+      max-width: 400px;
+    }
+  }
+
   @media (max-width: 1200px) {
+    html, body {
+      height: auto;
+      min-height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .app-layout {
+      height: auto;
+      min-height: 100vh;
+      overflow: visible;
+    }
+
     .main-content {
       flex-direction: column;
     align-items: center;
       min-height: 100vh;
+      height: auto;
+      overflow: visible;
     }
 
     .main-panel {
@@ -261,6 +324,7 @@
       width: min(85vw, 600px);
       height: min(85vw, 600px);
       margin: 0 auto;
+      aspect-ratio: 1/1;
     }
 
     #needle,
@@ -290,6 +354,12 @@
       overflow-y: auto;
       border-radius: 0;
       border-left: none;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE et Edge */
+    }
+
+    .left-panel::-webkit-scrollbar {
+      display: none; /* Chrome, Safari et Opera */
     }
 
     .left-panel.open {
@@ -377,13 +447,25 @@
   }
 
   .wheel-options-list {
-    max-height: 500px;
+    max-height: 280px;
     overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE et Edge */
+  }
+
+  .wheel-options-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari et Opera */
   }
 
   .saved-wheels {
-    max-height: 400px;
+    max-height: 250px;
     overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE et Edge */
+  }
+
+  .saved-wheels::-webkit-scrollbar {
+    display: none; /* Chrome, Safari et Opera */
   }
 
   .wheel-list-item {
@@ -596,7 +678,7 @@
   .wheel-title {
     width: 100%;
     max-width: 900px;
-    height: 200px;
+    /* height: 200px; */
     margin: 0 auto 20px auto;
   }
 
@@ -605,12 +687,13 @@
     position: relative;
     width: 600px;
     height: 600px;
-    max-width: 90vw;
-    max-height: 90vw;
+    max-width: min(90vw, 55vh);
+    max-height: min(90vw, 55vh);
     margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    aspect-ratio: 1/1;
   }
 
   #wheel,
@@ -668,8 +751,8 @@
   }
 
   .button-spin-it {
-    width: 300px;
-    height: 120px;
+    width: 250px;
+    height: 100px;
     border: none;
     padding: 0;
     background-color: transparent;
@@ -880,6 +963,12 @@
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
     color: #f496ad;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE et Edge */
+  }
+
+  #side-note::-webkit-scrollbar {
+    display: none; /* Chrome, Safari et Opera */
   }
 
   #side-note.open {
@@ -1004,6 +1093,7 @@
     height: min(75vh, 75vw);
     max-width: 1000px;
     max-height: 1000px;
+    aspect-ratio: 1/1;
   }
 
   .fullscreen-mode #needle,
@@ -1128,7 +1218,7 @@
         <ul class="wheel-list wheel-options-list" role="list">
           <!-- Template pour les options -->
           <li class="wheel-list-item wheel-option-item" role="listitem">
-            <span class="wheel-option-name">Toto</span>
+            <span class="wheel-option-name" contenteditable="plaintext-only" aria-label="Nom de l'option">Toto</span>
             <div class="saved-wheel-actions">
               <div class="saved-wheel-actions-inner">
                 <input 
@@ -1221,13 +1311,12 @@
         </div>
         </details>
         
-                <details class="info-item">
+        <details class="info-item">
           <summary>⚡️ LE SLIDER "Suspense"</summary>
           <div class="info-item-text">
             Multiplie tous les dramas pourqu'ils comptent jusqu'à 5x plus dans le tirage !
         </div>
         </details>
-        
 
         <details class="info-item">
           <summary>💾 LE SYSTEME DE SAUVEGARDE</summary>
@@ -1249,9 +1338,8 @@
           <div class="info-item-img">
             <img src="https://64.media.tumblr.com/0f33cc93302175124ed38bac5fc1c588/tumblr_inline_t66riw7dCj1yrz37b_500.png" alt="Icône Importer">
             <img src="https://64.media.tumblr.com/d2e9593ed01f463308c8bfd5f4f424d6/tumblr_inline_t66ri1LrnJ1yrz37b_500.png" alt="Icône Exporter">
-            
           </div>
-        </details>        
+        </details>
 
         <details class="info-item">
           <summary>☸️ SPIN IT !!!</summary>
@@ -1577,6 +1665,29 @@
           const nameSpan = li.querySelector('.wheel-option-name');
           if (nameSpan) {
             nameSpan.textContent = opt && opt.text ? opt.text : '';
+            
+            // Rendre l'option éditable
+            nameSpan.setAttribute('contenteditable', 'plaintext-only');
+            
+            // Sauvegarder les modifications lors de l'édition
+            nameSpan.addEventListener('blur', () => {
+              const newText = nameSpan.textContent.trim();
+              if (newText && newText !== opt.text) {
+                opt.text = newText;
+                this.applySuspenseMultiplier();
+              } else if (!newText) {
+                // Si vide, restaurer l'ancien texte
+                nameSpan.textContent = opt.text;
+              }
+            });
+
+            // Valider avec Entrée
+            nameSpan.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                nameSpan.blur();
+              }
+            });
           }
 
           // Gestion du booster (x2) via la checkbox
@@ -1616,11 +1727,31 @@
       }
 
       /**
-       * Génère une couleur arc-en-ciel basée sur le temps
+       * Génère une couleur animée avec transition smooth entre les couleurs
        */
       getRainbowColor(time) {
-        const hue = (time * 360) % 360;
-        return `hsl(${hue}, 100%, 70%)`;
+      const colors = [
+          { r: 155, g: 246, b: 255 }, // #9bf6ff - bleu clair
+          { r: 198, g: 198, b: 237 }, // #c6c6ed - violet clair (transition bleu→rose)
+          { r: 241, g: 151, b: 220 }, // #f197dc - rose
+          { r: 241, g: 151, b: 220 }, // #f197dc - rose (dupliqué pour rester plus longtemps)
+          { r: 255, g: 202, b: 40 },  // #ffca28 - jaune
+          { r: 255, g: 202, b: 40 },  // #ffca28 - jaune (dupliqué pour rester plus longtemps)
+          { r: 205, g: 224, b: 147 }  // #cde093 - vert clair (transition jaune→bleu)
+        ];
+        
+        // Animation ralentie pour voir toutes les couleurs (multiplier par 0.5)
+        const position = (time * 0.5) % colors.length;
+        const index = Math.floor(position);
+        const nextIndex = (index + 1) % colors.length;
+        const blend = position - index; // Valeur entre 0 et 1 pour l'interpolation
+        
+        // Interpolation linéaire entre deux couleurs
+        const r = Math.round(colors[index].r + (colors[nextIndex].r - colors[index].r) * blend);
+        const g = Math.round(colors[index].g + (colors[nextIndex].g - colors[index].g) * blend);
+        const b = Math.round(colors[index].b + (colors[nextIndex].b - colors[index].b) * blend);
+        
+        return `rgb(${r}, ${g}, ${b})`;
       }
 
       draw() {
@@ -1794,6 +1925,17 @@
         this.isAutoRotating = false;
         this.isSpinning = true;
 
+        // Jouer le son immédiatement au démarrage du spin
+        if (this.tickSound) {
+          this.tickSound.currentTime = 0;
+          this.tickSound.play().catch(() => {
+            // Ignorer les erreurs de lecture (autoplay policy)
+          });
+        }
+
+        // Initialiser avec le segment actuel pour détecter le prochain changement
+        this.lastSegmentIndex = this.getCurrentSegmentIndex();
+
         const startAngle = this.rotationAngle;
         const n = this.options.length;
         const arc = (2 * Math.PI) / n;
@@ -1818,13 +1960,15 @@
 
           // Détecter le changement de segment pour jouer le son
           const currentSegment = this.getCurrentSegmentIndex();
-          if (currentSegment !== this.lastSegmentIndex && currentSegment !== -1) {
+          if (currentSegment !== -1 && currentSegment !== this.lastSegmentIndex) {
             this.lastSegmentIndex = currentSegment;
-            // Jouer le son (on recrée l'audio à chaque fois pour permettre les sons rapprochés)
-            this.tickSound.currentTime = 0;
-            this.tickSound.play().catch(() => {
-              // Ignorer les erreurs de lecture (autoplay policy)
-            });
+            // Jouer le son dès qu'on détecte un segment valide
+            if (this.tickSound) {
+              this.tickSound.currentTime = 0;
+              this.tickSound.play().catch(() => {
+                // Ignorer les erreurs de lecture (autoplay policy)
+              });
+            }
           }
 
           if (t < 1) {
@@ -1853,8 +1997,8 @@
           if (this.rotationAngle > Math.PI * 2) {
             this.rotationAngle -= Math.PI * 2;
           }
-          // Incrémenter le temps pour l'animation arc-en-ciel (plus lent = transition plus douce)
-          this.rainbowTime = (this.rainbowTime + 0.004) % 1;
+          // Incrémenter le temps pour l'animation arc-en-ciel (plus rapide)
+          this.rainbowTime += 0.03;
           this.draw();
           requestAnimationFrame(step);
         };
@@ -2972,6 +3116,3 @@
 </body>
 
 </html>
-
-
-
