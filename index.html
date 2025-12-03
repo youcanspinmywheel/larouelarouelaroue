@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="icon" type="image/png" href="https://64.media.tumblr.com/8fde895ba7c7203d0638d3f842c60600/tumblr_inline_t63czilaK91yrz37b_500.png">
   
   <!-- Préconnexion au serveur d'images pour accélérer le chargement -->
   <link rel="preconnect" href="https://64.media.tumblr.com">
@@ -25,7 +26,7 @@
     font-family: 'Courier New', monospace !important;
   }
 
-  input:not([type="checkbox"]), 
+  input:not([type="checkbox"]):not([type="range"]), 
   textarea,
   .wheel-option-name[contenteditable],
   .saved-wheel-name[contenteditable] {
@@ -377,12 +378,15 @@
     }
 
     #result-text {
-    padding: 0;
+      padding: 0;
       margin-bottom: 15px;
+      text-align: center;
     }
 
     .result-remove {
       margin-top: 10px;
+      margin-left: 0;
+      margin-right: 0;
     }
   }
 
@@ -432,6 +436,21 @@
     #needle,
     .needle {
       width: min(38vw, 160px);
+    }
+
+    #result {
+      flex-direction: column;
+      padding: 25px 20px;
+      max-width: 90vw;
+    }
+
+    #result-text {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .result-remove {
+      margin-top: 15px;
     }
   }
 
