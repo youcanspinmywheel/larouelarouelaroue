@@ -69,6 +69,7 @@
         this.resultText = document.getElementById('result-text');
         this.resultClose = document.getElementById('result-close');
         this.resultRemove = document.getElementById('result-remove');
+        this.entryInput = document.getElementById('entry-input');
 
         if (this.spinButton && this.resultContainer && this.resultText) {
           this.init();
@@ -84,6 +85,42 @@
       updateSpinButtonState() {
         const hasRealOptions = !this.wheel.usesDefaultOptions && this.wheel.options.length > 0;
         this.spinButton.disabled = !hasRealOptions;
+      }
+
+      /**
+       * Désactive les contrôles d'édition pendant le spin (suppression, ajout, etc.)
+       */
+      setControlsDisabled(disabled) {
+        // Désactiver/activer l'input d'ajout
+        if (this.entryInput) {
+          this.entryInput.disabled = disabled;
+        }
+
+        // Désactiver/activer tous les boutons de suppression dans la liste
+        const deleteButtons = document.querySelectorAll('.wheel-options-list .saved-wheel-btn');
+        deleteButtons.forEach(btn => {
+          btn.disabled = disabled;
+          btn.style.opacity = disabled ? '0.5' : '1';
+          btn.style.pointerEvents = disabled ? 'none' : 'auto';
+        });
+
+        // Désactiver/activer les checkboxes de boost
+        const boostCheckboxes = document.querySelectorAll('.wheel-options-list .wheel-option-checkbox');
+        boostCheckboxes.forEach(checkbox => {
+          checkbox.disabled = disabled;
+        });
+
+        // Désactiver/activer le slider de suspense
+        const suspenseSlider = document.getElementById('suspense-slider');
+        if (suspenseSlider) {
+          suspenseSlider.disabled = disabled;
+        }
+
+        // Désactiver/activer l'édition des noms d'options
+        const optionNames = document.querySelectorAll('.wheel-options-list .wheel-option-name');
+        optionNames.forEach(name => {
+          name.contentEditable = disabled ? 'false' : 'plaintext-only';
+        });
       }
 
       bindEvents() {
@@ -106,8 +143,9 @@
 
         // Bouton de spin
         this.spinButton.addEventListener('click', () => {
-          // Désactiver le bouton pendant le spin
+          // Désactiver le bouton et les contrôles pendant le spin
           this.spinButton.disabled = true;
+          this.setControlsDisabled(true);
           this.wheel.onSpinEnd = (winner) => this.showResult(winner);
           this.wheel.spin();
         });
@@ -164,6 +202,8 @@
         this.wheel.startAutoRotate();
         // Réactiver le bouton SPIN (vérifie automatiquement s'il y a des options valides)
         this.updateSpinButtonState();
+        // Réactiver les contrôles d'édition
+        this.setControlsDisabled(false);
       }
     }
 

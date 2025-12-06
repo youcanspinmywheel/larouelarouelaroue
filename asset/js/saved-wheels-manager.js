@@ -126,10 +126,11 @@
           name = `Roue ${this.getNextWheelNumber()}`;
         }
 
+        // Utiliser baseOptions pour éviter de sauvegarder les duplicatas du slider suspense
         return {
           id,
           name,
-          options: this.wheel.options.map((opt) => ({
+          options: this.wheel.baseOptions.map((opt) => ({
             text: opt.text,
             boosted: !!opt.boosted,
             multiplier: opt.multiplier && opt.multiplier > 0 ? opt.multiplier : 1,
@@ -199,8 +200,9 @@
       hasUnsavedChanges() {
         if (!this.lastSavedState) return false;
         
+        // Utiliser baseOptions pour comparer (sans les duplicatas du slider suspense)
         const currentState = JSON.stringify({
-          options: this.wheel.options.map((opt) => ({
+          options: this.wheel.baseOptions.map((opt) => ({
             text: opt.text,
             boosted: !!opt.boosted,
             multiplier: opt.multiplier || 1,
@@ -211,8 +213,9 @@
       }
 
       updateLastSavedState() {
+        // Utiliser baseOptions (sans les duplicatas du slider suspense)
         this.lastSavedState = JSON.stringify({
-          options: this.wheel.options.map((opt) => ({
+          options: this.wheel.baseOptions.map((opt) => ({
             text: opt.text,
             boosted: !!opt.boosted,
             multiplier: opt.multiplier || 1,
@@ -407,11 +410,12 @@
       async exportWheel() {
         try {
           // Créer un snapshot de la roue actuelle
+          // Utiliser baseOptions pour éviter d'exporter les duplicatas du slider suspense
           const wheelData = {
             name: this.currentSavedId 
               ? this.savedWheels.find((w) => w.id === this.currentSavedId)?.name || 'Roue exportée'
               : 'Roue exportée',
-            options: this.wheel.options.map((opt) => ({
+            options: this.wheel.baseOptions.map((opt) => ({
               text: opt.text,
               boosted: !!opt.boosted,
               multiplier: opt.multiplier && opt.multiplier > 0 ? opt.multiplier : 1,

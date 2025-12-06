@@ -363,6 +363,12 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 0.9rem;
+    transition: opacity 0.2s ease;
+  }
+
+  .entry-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   .button-spin-it {
@@ -434,11 +440,22 @@
     background: rgba(255, 255, 255, 0.3);
     outline: none;
     cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .suspense-slider:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
   
   #suspense-value {
     font-weight: bold;
     font-size: 16px;
+  }
+
+  .wheel-option-checkbox:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
 
