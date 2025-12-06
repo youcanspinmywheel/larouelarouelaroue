@@ -285,4 +285,5 @@
       new FullscreenManager();
       new NotePanelManager();
       new MobileMenuManager();
+      new Companion();
     });

@@ -121,6 +121,11 @@
         }
         this.resultContainer.classList.add('show');
         this.createConfetti();
+        
+        // Notifier le compagnon
+        const event = new CustomEvent('wheel:result', { detail: winner });
+        document.dispatchEvent(event);
+
         // Désactiver le bouton SPIN pendant l'affichage du résultat
         this.spinButton.disabled = true;
       }

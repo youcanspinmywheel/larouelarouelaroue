@@ -440,3 +440,185 @@
     font-size: 16px;
   }
 
+
+/* Compagnon Pixel Art */
+#pixel-companion {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  z-index: 9999;
+  pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+  transform-origin: bottom center;
+  /* Centrer le sprite */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+#pixel-companion.dragged {
+  cursor: grabbing;
+  transform: scale(1.2) rotate(15deg);
+  transition: transform 0.1s;
+}
+
+.companion-sprite {
+  font-size: 40px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2));
+  transition: transform 0.2s ease;
+  animation: breathe 2s infinite ease-in-out;
+}
+
+.companion-shadow {
+  position: absolute;
+  bottom: 0;
+  width: 30px;
+  height: 6px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+#pixel-companion.jump .companion-sprite {
+  animation: jump 0.5s ease-in-out;
+}
+
+#pixel-companion.walking .companion-sprite {
+  animation: walk 0.4s infinite alternate;
+}
+
+.companion-bubble {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px) scale(0);
+  background: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  opacity: 0;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.companion-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+}
+
+.companion-bubble.show {
+  transform: translateX(-50%) translateY(-10px) scale(1);
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.05); }
+}
+
+@keyframes jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-30px) scaleY(1.1); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes walk {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(5deg); }
+}
+
+/* Bouton d'invocation */
+#companion-btn {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #cb61a3;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s;
+}
+
+#companion-btn:hover {
+  transform: scale(1.1);
+  background: #fff;
+}
+
+#companion-btn.active {
+  background: #cb61a3;
+  color: white;
+  border-color: white;
+}
+
+#pixel-companion.rolling .companion-sprite {
+  animation: roll 0.5s linear infinite;
+}
+
+@keyframes roll {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Animations Avancées Compagnon --- */
+
+/* Dodo Profond (Zzz) */
+.companion-zzz {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #aaa;
+  opacity: 0;
+  animation: zzz-float 2s linear infinite;
+}
+
+@keyframes zzz-float {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-30px) translateX(15px); opacity: 0; }
+}
+
+/* Mode Glitch */
+#pixel-companion.glitch .companion-sprite {
+  animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+  filter: drop-shadow(-2px 0 #ff00c1) drop-shadow(2px 0 #00fff9);
+}
+
+@keyframes glitch-anim {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
+}
+
+/* Mode Disco */
+#pixel-companion.disco .companion-sprite {
+  animation: disco-bounce 0.5s infinite alternate, disco-color 2s infinite linear;
+}
+
+@keyframes disco-bounce {
+  0% { transform: scale(1) rotate(-10deg); }
+  100% { transform: scale(1.2) rotate(10deg); }
+}
+
+@keyframes disco-color {
+  0% { filter: hue-rotate(0deg) drop-shadow(0 4px 2px rgba(0,0,0,0.2)); }
+  100% { filter: hue-rotate(360deg) drop-shadow(0 4px 2px rgba(0,0,0,0.2)); }
+}
