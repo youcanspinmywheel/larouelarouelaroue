@@ -119,6 +119,9 @@
         
         // Marquer qu'une nouvelle option a été ajoutée (pour la gestion des sauvegardes)
         this.hasAddedNewOption = true;
+        
+        // Notifier le compagnon
+        document.dispatchEvent(new CustomEvent('wheel:optionAdded', { detail: value }));
       }
 
       /**
@@ -138,6 +141,9 @@
         }
         
         this.applySuspenseMultiplier();
+        
+        // Notifier le compagnon
+        document.dispatchEvent(new CustomEvent('wheel:optionRemoved'));
       }
 
       /**
@@ -506,6 +512,9 @@
         // on coupe l'auto-rotation lente pendant le spin
         this.isAutoRotating = false;
         this.isSpinning = true;
+
+        // Notifier le compagnon
+        document.dispatchEvent(new CustomEvent('wheel:spinStart'));
 
         // Jouer le son immédiatement au démarrage du spin
         if (this.tickSound) {

@@ -481,13 +481,226 @@
   transition: transform 0.1s;
 }
 
+.companion-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.companion-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CHAPEAUX - Supprimé */
+
 .companion-sprite {
   font-size: 40px;
   line-height: 1;
   filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2));
-  transition: transform 0.2s ease;
   animation: breathe 2s infinite ease-in-out;
 }
+
+/* BULLLE DE RÊVE - Supprimée */
+
+/* === VISAGE DU COMPAGNON === */
+.companion-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Yeux de base */
+.eye {
+  position: absolute;
+  top: 18px;
+  width: 4px;
+  height: 4px;
+  background: #333;
+  border-radius: 50%;
+  animation: blink 4s infinite;
+}
+
+.eye.left {
+  left: 15px;
+}
+
+.eye.right {
+  right: 15px;
+}
+
+/* Bouche de base */
+.mouth {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 3px;
+  border-bottom: 2px solid #333;
+  border-radius: 50%;
+}
+
+/* === EXPRESSIONS === */
+
+/* Content (Happy) */
+.companion-face.happy .eye {
+  top: 16px;
+  height: 4px;
+  background: transparent;
+  border-radius: 50%;
+  border-top: 2px solid #333; /* Arc joyeux */
+  animation: none;
+}
+
+.companion-face.happy .mouth {
+  width: 8px;
+  height: 6px;
+  border-bottom: 2px solid #333;
+  border-radius: 0 0 10px 10px; /* Grand sourire */
+  background: #5a2e2e;
+}
+
+/* Triste (Sad) */
+.companion-face.sad .eye {
+  top: 20px;
+  background: #333;
+}
+.companion-face.sad .mouth {
+  top: 30px;
+  border-bottom: none;
+  border-top: 2px solid #333;
+  border-radius: 50% 50% 0 0;
+}
+
+/* Colère (Angry) */
+.companion-face.angry .eye {
+  height: 2px;
+  width: 5px;
+  border-radius: 0;
+  top: 18px;
+  background: #333;
+}
+
+.companion-face.angry .eye.left { transform: rotate(20deg); }
+.companion-face.angry .eye.right { transform: rotate(-20deg); }
+.companion-face.angry .mouth {
+  width: 6px;
+  height: 2px;
+  background: #333;
+  border-radius: 0;
+  border: none;
+}
+
+/* Surpris (Surprised) - Version Mignonne */
+.companion-face.surprised .eye {
+  width: 6px;
+  height: 6px;
+  background: #333; /* Yeux pleins */
+  border-radius: 50%;
+  border: none;
+  animation: none;
+  top: 18px;
+}
+
+.companion-face.surprised .mouth {
+  width: 4px;
+  height: 4px;
+  background: #333; /* Petite bouche ronde pleine */
+  border-radius: 50%;
+  border: none;
+  top: 29px;
+  transform: translateX(-50%);
+}
+
+/* Dodo (Sleep) */
+.companion-face.sleep .eye {
+  height: 2px;
+  width: 5px;
+  border-radius: 0;
+  top: 20px;
+  animation: none;
+  background: #333;
+}
+
+.companion-face.sleep .mouth {
+  width: 4px;
+  height: 4px;
+  border: 1px solid #333;
+  border-radius: 50%;
+  background: transparent;
+  top: 28px;
+}
+
+/* Étourdi (Dizzy) */
+.companion-face.dizzy .eye {
+  background: transparent;
+  border-top: 2px solid #333;
+  border-bottom: 2px solid #333;
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  animation: spin-eyes 1s linear infinite;
+}
+
+.companion-face.dizzy .mouth {
+  width: 8px;
+  height: 2px;
+  background: transparent;
+  border-bottom: 2px solid #333;
+  transform: rotate(-10deg);
+}
+
+/* Cool (Disco) */
+.companion-face.cool .eye {
+  width: 10px;
+  height: 6px;
+  background: #333;
+  border-radius: 2px;
+  top: 17px;
+  animation: none;
+}
+
+.companion-face.cool .eye::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 2px;
+  height: 2px;
+  background: rgba(255,255,255,0.5);
+}
+.companion-face.cool .mouth {
+  width: 6px;
+  height: 2px;
+  background: #333;
+  border: none;
+  border-radius: 2px;
+  top: 30px;
+}
+
+@keyframes blink {
+  0%, 45%, 55%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.1); }
+}
+
+@keyframes spin-eyes {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ------------------- */
 
 .companion-shadow {
   position: absolute;
@@ -499,13 +712,31 @@
   z-index: -1;
 }
 
-#pixel-companion.jump .companion-sprite {
+/* --- ANIMATIONS SUR LE BODY (qui contient sprite + visage) --- */
+
+#pixel-companion.jump .companion-body {
   animation: jump 0.5s ease-in-out;
 }
 
-#pixel-companion.walking .companion-sprite {
+#pixel-companion.walking .companion-body {
   animation: walk 0.4s infinite alternate;
 }
+
+#pixel-companion.rolling .companion-body {
+  animation: roll 0.5s linear infinite;
+}
+
+/* Mode Glitch */
+#pixel-companion.glitch .companion-body {
+  animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+  filter: drop-shadow(-2px 0 #ff00c1) drop-shadow(2px 0 #00fff9);
+}
+
+/* Mode Disco */
+#pixel-companion.disco .companion-body {
+  animation: disco-bounce 0.5s infinite alternate, disco-color 2s infinite linear;
+}
+
 
 .companion-bubble {
   position: absolute;
@@ -582,10 +813,6 @@
   border-color: white;
 }
 
-#pixel-companion.rolling .companion-sprite {
-  animation: roll 0.5s linear infinite;
-}
-
 @keyframes roll {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -611,12 +838,6 @@
   100% { transform: translateY(-30px) translateX(15px); opacity: 0; }
 }
 
-/* Mode Glitch */
-#pixel-companion.glitch .companion-sprite {
-  animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
-  filter: drop-shadow(-2px 0 #ff00c1) drop-shadow(2px 0 #00fff9);
-}
-
 @keyframes glitch-anim {
   0% { transform: translate(0) }
   20% { transform: translate(-2px, 2px) }
@@ -624,11 +845,6 @@
   60% { transform: translate(2px, 2px) }
   80% { transform: translate(2px, -2px) }
   100% { transform: translate(0) }
-}
-
-/* Mode Disco */
-#pixel-companion.disco .companion-sprite {
-  animation: disco-bounce 0.5s infinite alternate, disco-color 2s infinite linear;
 }
 
 @keyframes disco-bounce {
@@ -639,4 +855,32 @@
 @keyframes disco-color {
   0% { filter: hue-rotate(0deg) drop-shadow(0 4px 2px rgba(0,0,0,0.2)); }
   100% { filter: hue-rotate(360deg) drop-shadow(0 4px 2px rgba(0,0,0,0.2)); }
+}
+
+/* Animation des coeurs au clic */
+.click-heart {
+    position: fixed;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 10000;
+    animation: heart-float 1s ease-out forwards;
+}
+
+@keyframes heart-float {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    50% { transform: translate(-50%, -80px) scale(1.2); opacity: 0.8; }
+    100% { transform: translate(-50%, -120px) scale(1); opacity: 0; }
+}
+
+/* Animation de rebond à l'atterrissage */
+#pixel-companion.bounce-landing .companion-body {
+  animation: bounce-landing 0.6s ease-out;
+}
+
+@keyframes bounce-landing {
+  0% { transform: scale(1, 1) translateY(0); }
+  25% { transform: scale(1.15, 0.85) translateY(0); } /* Impact : écrasement */
+  50% { transform: scale(0.9, 1.1) translateY(-20px); } /* Rebond : étirement vers le haut */
+  75% { transform: scale(1.05, 0.95) translateY(0); } /* Retombée : léger écrasement */
+  100% { transform: scale(1, 1) translateY(0); } /* Retour à la normale */
 }
