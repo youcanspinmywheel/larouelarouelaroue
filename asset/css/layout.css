@@ -93,14 +93,10 @@
     top: 20px;
     right: 20px;
     z-index: 1000;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    background: transparent;
-    border: none;
-    display: block;
+    text-decoration: none;
     width: 60px;
     height: 60px;
-    text-decoration: none;
+    display: block;
   }
 
   #home-btn:hover {
@@ -117,6 +113,9 @@
     display: block;
     transition: opacity 0.3s ease;
     object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   .home-default {
