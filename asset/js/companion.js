@@ -198,6 +198,15 @@ class Companion {
     
     setTimeout(() => {
       this.companion.classList.remove('disco');
+      
+      // Force le navigateur à oublier l'état bleu
+      const sprite = this.companion.querySelector('.companion-sprite');
+      if (sprite) {
+        sprite.style.animation = 'none';
+        void sprite.offsetWidth; // Force reflow
+        sprite.style.animation = ''; 
+      }
+
       this.state = 'idle';
       this.startLifeCycle();
     }, 5000);
