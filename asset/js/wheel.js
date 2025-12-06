@@ -380,40 +380,51 @@
             ctx.stroke();
           }
 
-          // Texte vertical au centre du segment, avec trim si trop long
+          // Texte le long du segment
           const rawLabel = this.options[i] && this.options[i].text ? this.options[i].text : '';
           let label = rawLabel.trim();
 
-        ctx.save();
+          ctx.save();
           ctx.translate(this.centerX, this.centerY);
           // on oriente le repère dans l'axe du segment
           ctx.rotate(currentAngle + arc / 2);
           ctx.fillStyle = '#000';
-        ctx.font = 'bold 14px Arial';
+          
+          // Calcul de la taille de police adaptative
+          const availableLength = this.outsideRadius - this.insideRadius - 20;
+          const arcWidth = arc * (this.outsideRadius * 0.6); // largeur disponible dans l'arc
+          
+          // Taille de base qui s'adapte à la taille de la roue
+          let fontSize = Math.min(16, Math.max(10, this.outsideRadius / 18));
+          
+          // Ajuster la taille si le texte est trop long
+          ctx.font = `bold ${fontSize}px Arial`;
+          let textWidth = ctx.measureText(label).width;
+          
+          // Réduire la police si le texte dépasse
+          while (textWidth > availableLength && fontSize > 8) {
+            fontSize -= 1;
+            ctx.font = `bold ${fontSize}px Arial`;
+            textWidth = ctx.measureText(label).width;
+          }
+          
+          // Si toujours trop long, tronquer avec ellipsis
+          if (textWidth > availableLength) {
+            while (label.length > 1 && ctx.measureText(label + '…').width > availableLength) {
+              label = label.slice(0, -1);
+            }
+            label = label + '…';
+          }
+          
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
+          
+          // Position du texte au milieu du segment (entre le centre et le bord)
+          const textRadius = (this.insideRadius + this.outsideRadius) / 2;
+          
+          ctx.fillText(label, textRadius, 0);
 
-          const bandThickness = this.outsideRadius - this.insideRadius;
-          const lineHeight = 8;
-          const maxLines = Math.max(1, Math.floor((bandThickness - 10) / lineHeight));
-
-          // trim : on garde au plus maxLines caractères (approximatif mais efficace)
-          if (label.length > maxLines) {
-            label = label.slice(0, maxLines - 1) + '…';
-          }
-
-          const startRadius = this.insideRadius + 5;
-          const totalHeight = label.length * lineHeight;
-          const offsetStart = startRadius + (bandThickness - totalHeight) / 2;
-
-          // on dessine chaque caractère l'un en dessous de l'autre le long du rayon
-          for (let j = 0; j < label.length; j++) {
-            const ch = label[j];
-            const r = offsetStart + j * lineHeight;
-            ctx.fillText(ch, r, 0);
-          }
-
-        ctx.restore();
+          ctx.restore();
           
           // Passer à l'angle suivant
           currentAngle += arc;
