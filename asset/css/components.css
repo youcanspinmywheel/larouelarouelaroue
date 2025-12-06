@@ -1,0 +1,442 @@
+  /* ========================================
+     LISTES & ITEMS
+     ======================================== */
+  .panel-counter {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+
+  .panel-counter.show {
+    display: flex;
+  }
+
+  .counter-label {
+    color: #555;
+  }
+
+  .counter-value {
+    color: #cb61a3;
+    font-size: 1em;
+  }
+
+  .wheel-list,
+  .saved-wheels {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+  }
+
+  .wheel-options-list {
+    max-height: 280px;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE et Edge */
+  }
+
+  .wheel-options-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari et Opera */
+  }
+
+  .saved-wheels {
+    max-height: 250px;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE et Edge */
+  }
+
+  .saved-wheels::-webkit-scrollbar {
+    display: none; /* Chrome, Safari et Opera */
+  }
+
+  .wheel-list-item {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0 8px 10px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+  }
+
+  .saved-wheel {
+    background: #edd4ff;
+  } 
+
+  .wheel-option-item {
+    background: #ece9f9;
+  }
+
+  .saved-wheel-name,
+  .wheel-option-name {
+    font-size: 16px;
+  }
+
+  .saved-wheel-name {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .wheel-option-name {
+    color: #000;
+    font-weight: 400;
+    word-break: break-word;
+    white-space: normal;
+    flex: 1;
+  }
+
+  .wheel-options-empty {
+    display: none;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    opacity: 0.8;
+  }
+
+  /* ========================================
+     BOUTONS D'ACTION
+     ======================================== */
+  .saved-wheel-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .saved-wheel-btn {
+    cursor: pointer;
+    background: none;
+    padding: 0;
+    border: none;
+    width: 110px;
+    height: 110px;
+    transition: transform 0.1s ease;
+  }
+
+  .saved-wheel-btn img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .saved-wheel-btn:active {
+    transform: scale(0.9);
+  }
+
+  /* Tailles de boutons */
+  .btn-little {
+    width: 40px;
+    height: 40px;
+  }
+
+  .saved-wheels .btn-little {
+    width: 35px;
+    height: 35px;
+  }
+
+  .left-panel .saved-wheel-actions {
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .left-panel .saved-wheel-actions.saved-wheel-actions-little {
+    gap: 5px;
+  }
+
+  .saved-wheel-actions-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ========================================
+     MODAL RÉSULTAT & CONFETTIS
+     ======================================== */
+  #result {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 50px 70px;
+    border: 4px solid #e2a9f1;
+    border-radius: 20px;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    z-index: 2000;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    min-width: 700px;
+    max-width: 90vw;
+  }
+
+  #result.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  #result-text {
+    padding: 0 20px;
+    max-width: 800px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  #result-text img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .result-emojis {
+    font-size: 1.2em;
+    text-align: center;
+  }
+
+  .result-winner {
+    font-weight: bold;
+    word-break: break-word;
+    text-align: center;
+    font-size: 1em;
+  }
+
+  .result-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    color: #cb61a3;
+    transition: transform 0.1s ease;
+  }
+
+  .result-close:active {
+    transform: scale(0.85);
+  }
+
+  .result-remove {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    width: 140px;
+    height: 110px;
+    transition: transform 0.1s ease;
+  }
+
+  .result-remove img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  .result-remove:active {
+    transform: scale(0.95);
+  }
+
+  /* Confettis */
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: #ff6b6b;
+    top: -10px;
+    z-index: 3000;
+    pointer-events: none;
+  }
+
+  .confetti-animation {
+    animation: confetti-fall linear forwards;
+  }
+
+  @keyframes confetti-fall {
+    0% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) translateX(var(--drift)) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  /* ========================================
+     ROUE & ÉLÉMENTS ASSOCIÉS
+     ======================================== */
+  .wheel-title {
+    width: 100%;
+    max-width: 900px;
+    /* height: 200px; */
+    margin: 0 auto 20px auto;
+  }
+
+  #wheel-wrapper,
+  .wheel-wrapper {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    max-width: min(90vw, 55vh);
+    max-height: min(90vw, 55vh);
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1/1;
+  }
+
+  #wheel,
+  .wheel {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  #needle,
+  .needle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    max-width: 35vw;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  #needle img,
+  .needle img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* ========================================
+     INPUTS & CONTRÔLES
+     ======================================== */
+  #input-wrapper,
+  .input-wrapper {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .entry-input {
+    height: 40px;
+    width: 100%;
+    text-align: center;
+    padding: 1em;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .button-spin-it {
+    width: 250px;
+    height: 100px;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    background-image: url('../images/buttons/spin.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: url('../images/cursors/problem.png') 32 32, auto;
+    margin: 20px auto 0 auto;
+    display: block;
+    transition: transform 0.1s ease;
+  }
+
+  .button-spin-it:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .button-spin-it:disabled {
+    filter: grayscale(1) brightness(0.8);
+    cursor: not-allowed;
+  }
+
+  .wheel-option-checkbox {
+    width: 20px;
+    height: 20px;
+  }
+
+  .wheel-option-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .wheel-option-checkbox-label img {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* ========================================
+     SLIDER SUSPENSE
+     ======================================== */
+  .suspense-slider-container {
+    padding: 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+  }
+
+  .suspense-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .suspense-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    outline: none;
+    cursor: pointer;
+  }
+  
+  #suspense-value {
+    font-weight: bold;
+    font-size: 16px;
+  }
+

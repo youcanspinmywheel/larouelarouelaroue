@@ -1,0 +1,42 @@
+  /* ========================================
+     MODE PLEIN ÉCRAN
+     ======================================== */
+  .fullscreen-mode .main-content {
+    flex-direction: row;
+  }
+
+  .fullscreen-mode .left-panel,
+  .fullscreen-mode .right-panel,
+  .fullscreen-mode .wheel-title {
+    display: none !important;
+  }
+
+  .fullscreen-mode .main-panel {
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: 40px;
+  }
+
+  .fullscreen-mode .fullscreen-btn {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .fullscreen-mode #wheel-wrapper,
+  .fullscreen-mode .wheel-wrapper {
+    width: min(75vh, 75vw);
+    height: min(75vh, 75vw);
+    max-width: 1000px;
+    max-height: 1000px;
+    aspect-ratio: 1/1;
+  }
+
+  .fullscreen-mode #needle,
+  .fullscreen-mode .needle {
+    width: 240px;
+  }
+
+  .fullscreen-mode .button-spin-it {
+    width: 300px;
+    height: 120px;
+    margin-top: 30px;
+  }

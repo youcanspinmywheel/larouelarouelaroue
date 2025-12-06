@@ -1,0 +1,335 @@
+  /* ========================================
+     RESPONSIVE DESIGN
+     ======================================== */
+  @media (min-width: 1600px) {
+    #wheel-wrapper,
+    .wheel-wrapper {
+      width: 800px;
+      height: 800px;
+      max-width: min(90vw, 70vh);
+      max-height: min(90vw, 70vh);
+    }
+
+    #needle,
+    .needle {
+      width: 280px;
+      max-width: 40vw;
+    }
+
+    .button-spin-it {
+      width: 320px;
+      height: 130px;
+    }
+
+    .side-panel {
+      width: 400px;
+      max-width: 400px;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    html, body {
+      height: auto;
+      min-height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .app-layout {
+      height: auto;
+      min-height: 100vh;
+      overflow: visible;
+    }
+
+    .main-content {
+      flex-direction: column;
+      align-items: center;
+      min-height: auto;
+      height: auto;
+      overflow: visible;
+    }
+
+    .main-panel {
+      justify-content: flex-start;
+      width: 100%;
+      max-width: 100%;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      padding-top: 10px;
+      padding-bottom: 20px;
+      gap: 15px;
+      height: auto;
+      min-height: auto;
+    }
+
+    .right-panel {
+      width: 100%;
+      max-width: 600px;
+      padding-top: 10px;
+    }
+
+    #wheel-wrapper,
+    .wheel-wrapper {
+      width: min(85vw, 600px);
+      height: min(85vw, 600px);
+      margin: 0 auto;
+      aspect-ratio: 1/1;
+    }
+
+    #needle,
+    .needle {
+      width: min(30vw, 220px);
+    }
+
+    #input-wrapper,
+    .input-wrapper {
+      margin-bottom: 20px;
+    }
+
+    #mobile-menu-btn {
+      display: flex;
+    }
+
+    .left-panel {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 280px;
+      height: 100vh;
+      max-width: 280px;
+      margin: 0;
+      z-index: 1999;
+      transition: left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      overflow-y: auto;
+      border-radius: 0;
+      border-left: none;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE et Edge */
+    }
+
+    .left-panel::-webkit-scrollbar {
+      display: none; /* Chrome, Safari et Opera */
+    }
+
+    .left-panel.open {
+      left: 0;
+    }
+
+    #mobile-menu-overlay {
+      display: block;
+    }
+
+    #result {
+      flex-direction: column;
+      padding: 30px 30px;
+      max-width: 85vw;
+      min-width: auto;
+      font-size: 1.8rem;
+    }
+
+    #result-text {
+      padding: 0;
+      margin-bottom: 15px;
+      text-align: center;
+      max-width: 300px;
+      gap: 8px;
+    }
+
+    #result-text img {
+      max-width: 100%;
+    }
+
+    .result-emojis {
+      font-size: 1.1em;
+    }
+
+    .result-remove {
+      margin-top: 10px;
+      margin-left: 0;
+      margin-right: 0;
+      width: 110px;
+      height: 90px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .wheel-title {
+      max-width: 90vw;
+      height: 140px;
+    }
+
+    #wheel-wrapper,
+    .wheel-wrapper {
+      width: min(85vw, 550px);
+      height: min(85vw, 550px);
+    }
+
+    #needle,
+    .needle {
+      width: min(32vw, 200px);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .wheel-title {
+      max-width: 90vw;
+      height: 100px;
+    }
+
+    #wheel-wrapper,
+    .wheel-wrapper {
+      width: min(90vw, 500px);
+      height: min(90vw, 500px);
+    }
+
+    #needle,
+    .needle {
+      width: min(35vw, 180px);
+    }
+
+    .saved-wheel-actions {
+      gap: 8px;
+    }
+
+    .wheel-option-checkbox-label img {
+      width: 36px;
+      height: 36px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .app-layout {
+      padding: 8px 12px;
+    }
+
+    .main-panel {
+      padding-top: 5px;
+      padding-bottom: 10px;
+      gap: 10px;
+    }
+
+    .wheel-title {
+      max-width: 90vw;
+      height: 110px;
+      margin-bottom: 10px;
+    }
+
+    #wheel-wrapper,
+    .wheel-wrapper {
+      width: min(75vw, 320px);
+      height: min(75vw, 320px);
+    }
+
+    #needle,
+    .needle {
+      width: min(30vw, 130px);
+    }
+
+    .button-spin-it {
+      width: 180px;
+      height: 70px;
+      margin-top: 5px;
+    }
+
+    #input-wrapper,
+    .input-wrapper {
+      margin-bottom: 8px;
+    }
+
+    .fullscreen-btn {
+      right: 75px;
+    }
+
+    #home-btn {
+      width: 50px;
+      height: 50px;
+      top: 15px;
+      right: 15px;
+    }
+
+    #note-tab {
+      top: 70px;
+      right: -122px;
+    }
+
+    #note-tab img {
+      width: 200px;
+    }
+
+    .panel-counter {
+      padding: 5px 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    .saved-wheel-actions {
+      gap: 5px;
+    }
+
+    .saved-wheel-actions-inner {
+      gap: 5px;
+    }
+
+    .wheel-option-checkbox-label {
+      gap: 5px;
+      font-size: 0.85rem;
+    }
+
+    .wheel-option-checkbox-label img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .btn-little {
+      width: 35px;
+      height: 35px;
+      min-width: 35px;
+      min-height: 35px;
+    }
+
+    .wheel-list-item {
+      gap: 8px;
+      padding: 10px;
+    }
+
+    .wheel-option-name,
+    .saved-wheel-name {
+      font-size: 14px;
+    }
+
+    #result {
+      flex-direction: column;
+      padding: 25px 20px;
+      max-width: 90vw;
+      min-width: auto;
+      font-size: 1.5rem;
+    }
+
+    #result-text {
+      margin-bottom: 20px;
+      max-width: 250px;
+      gap: 6px;
+    }
+
+    #result-text img {
+      max-width: 200px;
+    }
+
+    .result-emojis {
+      font-size: 1em;
+    }
+
+    .result-winner {
+      font-size: 1em;
+    }
+
+    .result-remove {
+      margin-top: 15px;
+      width: 90px;
+      height: 70px;
+    }
+  }
+

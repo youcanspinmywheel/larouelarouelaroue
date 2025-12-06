@@ -1,0 +1,88 @@
+  /* ========================================
+     CLASSES UTILITAIRES
+     ======================================== */
+  /* Flexbox */
+  .flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Effets visuels */
+  .btn-press-effect {
+    transition: transform 0.1s ease;
+  }
+
+  .btn-press-effect:active {
+    transform: scale(0.95);
+  }
+
+  .panel-glass {
+    padding: 20px;
+    border-radius: 12px;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Boutons ronds fixes */
+  .fixed-round-btn {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 3px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transition: all 0.3s ease;
+  }
+
+  .fixed-round-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+
+  .fixed-round-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Zoom d'image */
+  .image-zoom-container {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-zoom-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
