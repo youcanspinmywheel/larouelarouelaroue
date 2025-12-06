@@ -375,10 +375,12 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    cursor: url('../images/cursors/problem.png') 32 32, auto;
+    cursor: url('../images/cursors/problem_medium.png') 24 24, pointer;
     margin: 20px auto 0 auto;
     display: block;
     transition: transform 0.1s ease;
+    position: relative;
+    z-index: 20;
   }
 
   .button-spin-it:active:not(:disabled) {

@@ -27,6 +27,12 @@
     }
   }
 
+  @media (max-width: 1400px) {
+    #note-tab img {
+      width: 240px;
+    }
+  }
+
   @media (max-width: 1200px) {
     html, body {
       height: auto;
@@ -118,6 +124,10 @@
 
     #mobile-menu-overlay {
       display: block;
+    }
+
+    #note-tab img {
+      width: 220px;
     }
 
     #result {
