@@ -332,7 +332,8 @@ class Companion {
 
     const actions = ['idle', 'walk', 'walk', 'roll', 'jump', 'sleep', 'promote', 'disco', 'talk', 'talk'];
     const nextAction = actions[Math.floor(Math.random() * actions.length)];
-    const duration = 1000 + Math.random() * 2000;
+    // Pause plus courte (2s à 5s)
+    const duration = 2000 + Math.random() * 3000;
 
     switch (nextAction) {
       case 'talk':
@@ -356,11 +357,11 @@ class Companion {
         break;
       case 'jump':
         this.jump();
-        this.actionTimer = setTimeout(() => this.decideNextAction(), 1000);
+        this.actionTimer = setTimeout(() => this.decideNextAction(), 1500);
         break;
       case 'sleep':
         this.goToSleep();
-        this.actionTimer = setTimeout(() => this.decideNextAction(), 4000);
+        this.actionTimer = setTimeout(() => this.decideNextAction(), 5000);
         break;
       default: // idle
         this.actionTimer = setTimeout(() => this.decideNextAction(), duration);
