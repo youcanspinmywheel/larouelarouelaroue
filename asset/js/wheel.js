@@ -84,14 +84,18 @@
       
       /**
        * Applique le multiplicateur de suspense en dupliquant les options
+       * Filtre les options désactivées
        */
       applySuspenseMultiplier() {
+        // Filtrer uniquement les options activées
+        const enabledOptions = this.baseOptions.filter(opt => opt.enabled !== false);
+        
         if (this.suspenseMultiplier <= 1) {
-          this.options = this.baseOptions.map(opt => ({ ...opt }));
+          this.options = enabledOptions.map(opt => ({ ...opt }));
         } else {
           this.options = [];
           for (let i = 0; i < this.suspenseMultiplier; i++) {
-            this.baseOptions.forEach(opt => {
+            enabledOptions.forEach(opt => {
               this.options.push({ ...opt });
             });
           }
@@ -121,7 +125,7 @@
           this.usesDefaultOptions = false;
         }
 
-        this.baseOptions.push({ text: value, boosted: false, multiplier: 1 });
+        this.baseOptions.push({ text: value, boosted: false, multiplier: 1, enabled: true });
         this.applySuspenseMultiplier();
         
         // Marquer qu'une nouvelle option a été ajoutée (pour la gestion des sauvegardes)
@@ -232,6 +236,48 @@
         this.baseOptions.forEach((opt, index) => {
           // On clone simplement le <li> template
           const li = this.optionItemTemplate.cloneNode(true);
+
+          // Gérer l'état enabled/disabled avec le bouton œil
+          const toggleBtn = li.querySelector('.wheel-option-toggle-btn');
+          if (toggleBtn) {
+            const icon = toggleBtn.querySelector('i');
+            
+            // Définir l'icône initiale
+            const isEnabled = opt.enabled !== false;
+            if (icon) {
+              icon.className = isEnabled ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+            }
+            toggleBtn.dataset.enabled = isEnabled;
+            toggleBtn.onclick = null;
+            
+            toggleBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              opt.enabled = !opt.enabled;
+              
+              // Mettre à jour l'icône
+              if (icon) {
+                icon.className = opt.enabled ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+              }
+              toggleBtn.dataset.enabled = opt.enabled;
+              
+              // Ajouter/retirer la classe disabled sur le li
+              if (opt.enabled) {
+                li.classList.remove('disabled');
+              } else {
+                li.classList.add('disabled');
+              }
+              
+              // Redessiner la roue sans les options désactivées
+              this.applySuspenseMultiplier();
+              // Notifier l'historique
+              document.dispatchEvent(new CustomEvent('wheel:stateChanged', { detail: 'toggle' }));
+            });
+            
+            // Appliquer l'état initial
+            if (!opt.enabled) {
+              li.classList.add('disabled');
+            }
+          }
 
           const nameSpan = li.querySelector('.wheel-option-name');
           if (nameSpan) {

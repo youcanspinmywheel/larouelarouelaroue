@@ -190,13 +190,19 @@
       toggle() {
         this.isFullscreen = !this.isFullscreen;
         
+        const icon = this.toggleBtn.querySelector('i');
+        
         if (this.isFullscreen) {
           this.appLayout.classList.add('fullscreen-mode');
-          this.toggleBtn.textContent = '✕';
+          if (icon) {
+            icon.className = 'fa-solid fa-compress';
+          }
           this.toggleBtn.title = 'Quitter le plein écran';
         } else {
           this.appLayout.classList.remove('fullscreen-mode');
-          this.toggleBtn.textContent = '⛶';
+          if (icon) {
+            icon.className = 'fa-solid fa-expand';
+          }
           this.toggleBtn.title = 'Mode plein écran';
         }
       }
