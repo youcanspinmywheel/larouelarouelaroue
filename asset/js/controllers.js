@@ -121,6 +121,46 @@
         optionNames.forEach(name => {
           name.contentEditable = disabled ? 'false' : 'plaintext-only';
         });
+
+        // Désactiver/activer les boutons toggle (œil)
+        const toggleButtons = document.querySelectorAll('.wheel-option-toggle-btn');
+        toggleButtons.forEach(btn => {
+          btn.disabled = disabled;
+          btn.style.opacity = disabled ? '0.5' : '1';
+          btn.style.pointerEvents = disabled ? 'none' : 'auto';
+        });
+
+        // Désactiver/activer les boutons du panneau gauche
+        const leftPanelButtons = document.querySelectorAll('.left-panel .saved-wheel-btn');
+        leftPanelButtons.forEach(btn => {
+          btn.disabled = disabled;
+          btn.style.opacity = disabled ? '0.5' : '1';
+          btn.style.pointerEvents = disabled ? 'none' : 'auto';
+        });
+
+        // Désactiver/activer les boutons Undo/Redo
+        const undoBtn = document.getElementById('undo-btn');
+        const redoBtn = document.getElementById('redo-btn');
+        if (undoBtn && disabled) {
+          undoBtn.style.pointerEvents = 'none';
+          undoBtn.style.opacity = '0.3';
+        } else if (undoBtn && !disabled) {
+          undoBtn.style.pointerEvents = 'auto';
+          // L'opacité sera gérée par updateUI() du HistoryManager
+        }
+        if (redoBtn && disabled) {
+          redoBtn.style.pointerEvents = 'none';
+          redoBtn.style.opacity = '0.3';
+        } else if (redoBtn && !disabled) {
+          redoBtn.style.pointerEvents = 'auto';
+          // L'opacité sera gérée par updateUI() du HistoryManager
+        }
+
+        // Désactiver/activer les noms de roues sauvegardées
+        const savedWheelNames = document.querySelectorAll('.saved-wheels .saved-wheel-name');
+        savedWheelNames.forEach(name => {
+          name.contentEditable = disabled ? 'false' : 'plaintext-only';
+        });
       }
 
       bindEvents() {
@@ -180,6 +220,9 @@
 
         // Désactiver le bouton SPIN pendant l'affichage du résultat
         this.spinButton.disabled = true;
+        
+        // Garder tous les contrôles désactivés pendant l'affichage du résultat
+        // (ils sont déjà désactivés depuis le spin)
       }
 
       createConfetti() {
