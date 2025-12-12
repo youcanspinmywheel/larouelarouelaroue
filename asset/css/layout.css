@@ -81,12 +81,22 @@
     z-index: 1998;
   }
 
-  .fullscreen-btn {
+  /* Groupe de boutons en haut à droite */
+  .top-right-buttons {
+    position: fixed;
     top: 20px;
     right: 90px;
     z-index: 1000;
-    line-height: 1;
-    padding: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .top-right-buttons .fixed-round-btn {
+    position: relative;
+    top: auto;
+    right: auto;
   }
 
   #home-btn {

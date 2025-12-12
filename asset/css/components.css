@@ -141,6 +141,62 @@
     height: 35px;
   }
 
+  /* Boutons Undo/Redo - Version compacte en haut à droite */
+  .top-right-buttons .btn-undo-redo {
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #666;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .top-right-buttons .btn-undo-redo:hover:not(:disabled) {
+    background: rgba(203, 97, 163, 0.4) !important;
+    color: #fff;
+  }
+
+  .top-right-buttons .btn-undo-redo:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
+
+  /* ========================================
+     DRAG & DROP
+     ======================================== */
+  .wheel-option-item[draggable="true"] {
+    cursor: move;
+    transition: all 0.2s ease;
+  }
+
+  .wheel-option-item.dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+
+  .wheel-option-item.drag-over {
+    border-color: #cb61a3;
+    background: rgba(203, 97, 163, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(203, 97, 163, 0.3);
+  }
+
+  .wheel-option-item[draggable="true"]:hover {
+    border-color: rgba(203, 97, 163, 0.5);
+  }
+
+  /* ========================================
+     DERNIER RÉSULTAT (format compact)
+     ======================================== */
+  #last-result-counter .counter-value {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .left-panel .saved-wheel-actions {
     gap: 20px;
     justify-content: center;

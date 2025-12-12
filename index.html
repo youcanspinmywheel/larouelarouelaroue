@@ -22,10 +22,19 @@
   <!-- Layout principal -->
   <div class="app-layout">
     
-    <!-- Boutons fixes -->
-    <button class="fullscreen-btn fixed-round-btn" id="fullscreen-toggle" aria-label="Mode plein écran">
-      ⛶
-              </button>
+    <!-- Boutons fixes en haut à droite -->
+    <div class="top-right-buttons">
+      <button id="undo-btn" class="fixed-round-btn btn-undo-redo" aria-label="Annuler (Ctrl+Z)" title="Annuler (Ctrl+Z)">
+        ↶
+      </button>
+      <button id="redo-btn" class="fixed-round-btn btn-undo-redo" aria-label="Refaire (Ctrl+Y)" title="Refaire (Ctrl+Y)">
+        ↷
+      </button>
+      <button class="fullscreen-btn fixed-round-btn" id="fullscreen-toggle" aria-label="Mode plein écran">
+        ⛶
+      </button>
+    </div>
+    
     <button id="mobile-menu-btn" class="fixed-round-btn" aria-label="Menu mobile">
       ☰
     </button>
@@ -70,10 +79,10 @@
 
         <!-- Import/Export -->
         <div class="saved-wheel-actions">
-          <button id="import-wheel" class="saved-wheel-btn" aria-label="Importer une roue" title="Importer">
+          <button id="import-wheel" class="saved-wheel-btn" aria-label="Importer une roue">
             <img src="asset/images/buttons/import.png" alt="">
           </button>
-          <button id="export-wheel" class="saved-wheel-btn" aria-label="Exporter la roue" title="Exporter">
+          <button id="export-wheel" class="saved-wheel-btn" aria-label="Exporter la roue">
             <img src="asset/images/buttons/export.png" alt="">
           </button>
         </div>
@@ -157,6 +166,12 @@
         <div class="panel-counter" id="options-counter">
           <span class="counter-label">Dramas en cours:</span>
           <span class="counter-value">0</span>
+        </div>
+
+        <!-- Dernier résultat -->
+        <div class="panel-counter" id="last-result-counter">
+          <span class="counter-label">Dernier résultat:</span>
+          <span class="counter-value" id="last-result-value">-</span>
         </div>
 
         <!-- Message quand la liste est vide -->
@@ -290,6 +305,27 @@ Tu veux qu’un drama ait plus d’impact dans le tirage ? Coche la case CHEATCO
         </details>
 
         <details class="info-item">
+          <summary>↶↷ UNDO / REDO</summary>
+          <div class="info-item-text">
+            Tu as fait une erreur ? Pas de panique ! Utilise les boutons <strong>↶ (Annuler)</strong> et <strong>↷ (Refaire)</strong> ou les raccourcis clavier <strong>Ctrl+Z</strong> et <strong>Ctrl+Y</strong> pour revenir en arrière ou refaire une action.
+        </div>
+        </details>
+
+        <details class="info-item">
+          <summary>⇅ RÉORGANISER LES OPTIONS</summary>
+          <div class="info-item-text">
+            Tu peux réorganiser tes dramas par glisser-déposer ! Clique sur une option, maintiens le clic et déplace-la où tu veux dans la liste.
+        </div>
+        </details>
+
+        <details class="info-item">
+          <summary>📜 DERNIER RÉSULTAT</summary>
+          <div class="info-item-text">
+            Le dernier résultat de ton tirage est affiché dans le panneau de droite pour que tu puisses le consulter facilement.
+        </div>
+        </details>
+
+        <details class="info-item">
           <summary>🍑 VOUS VOULEZ UN PEU DE COMPAGNIE ?</summary>
           <div class="info-item-text">
             Parfois, se sentir seul devant sa roue, c'est triste. Heureusement, on a pensé à tout. Cliquez ici pour invoquer une amie (un peu collante).
@@ -311,6 +347,9 @@ Tu veux qu’un drama ait plus d’impact dans le tirage ? Coche la case CHEATCO
   <script src="asset/js/wheel.js"></script>
   <script src="asset/js/controllers.js"></script>
   <script src="asset/js/saved-wheels-manager.js"></script>
+  <script src="asset/js/history-manager.js"></script>
+  <script src="asset/js/drag-drop-manager.js"></script>
+  <script src="asset/js/results-history.js"></script>
   <script src="asset/js/companion.js"></script>
   <script src="asset/js/app.js"></script>
 

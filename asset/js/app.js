@@ -47,6 +47,25 @@
         this.suspenseSliderController = new SuspenseSliderController(this.wheel);
         this.spinController = new SpinController(this.wheel);
         this.savedWheelsManager = new SavedWheelsManager(this.wheel);
+        this.historyManager = new HistoryManager(this.wheel);
+        this.dragDropManager = new DragDropManager(this.wheel);
+        this.resultsHistory = new ResultsHistory();
+        
+        // Connecter les boutons Undo/Redo
+        this.bindHistoryButtons();
+      }
+
+      bindHistoryButtons() {
+        const undoBtn = document.getElementById('undo-btn');
+        const redoBtn = document.getElementById('redo-btn');
+        
+        if (undoBtn) {
+          undoBtn.addEventListener('click', () => this.historyManager.undo());
+        }
+        
+        if (redoBtn) {
+          redoBtn.addEventListener('click', () => this.historyManager.redo());
+        }
       }
     }
 
@@ -281,7 +300,7 @@
     // Démarrage de l'application
     document.addEventListener('DOMContentLoaded', () => {
       new BackgroundManager();
-      new WheelApp();
+      window.wheelAppInstance = new WheelApp();
       new FullscreenManager();
       new NotePanelManager();
       new MobileMenuManager();

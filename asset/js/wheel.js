@@ -127,6 +127,9 @@
         // Marquer qu'une nouvelle option a été ajoutée (pour la gestion des sauvegardes)
         this.hasAddedNewOption = true;
         
+        // Notifier l'historique
+        document.dispatchEvent(new CustomEvent('wheel:stateChanged', { detail: 'add' }));
+        
         // Notifier le compagnon
         document.dispatchEvent(new CustomEvent('wheel:optionAdded', { detail: value }));
       }
@@ -145,9 +148,13 @@
         if (!this.baseOptions.length && this.defaultOptions.length) {
           this.baseOptions = this.defaultOptions.map((opt) => ({ ...opt }));
           this.usesDefaultOptions = true;
+          // Ne pas notifier l'historique quand on revient à DRAMAS
+          this.applySuspenseMultiplier();
+        } else {
+          // Notifier l'historique seulement si on garde des options
+          this.applySuspenseMultiplier();
+          document.dispatchEvent(new CustomEvent('wheel:stateChanged', { detail: 'remove' }));
         }
-        
-        this.applySuspenseMultiplier();
         
         // Notifier le compagnon
         document.dispatchEvent(new CustomEvent('wheel:optionRemoved'));

@@ -7,7 +7,8 @@ const STORAGE_KEYS = {
   SAVED_WHEELS: 'toto-saved-wheels',
   LAST_BACKGROUND: 'wheel-last-background',
   LAST_TITLE: 'wheel-last-title',
-  UNSAVED_STATE: 'wheel-unsaved-state'
+  UNSAVED_STATE: 'wheel-unsaved-state',
+  RESULTS_HISTORY: 'wheel-results-history'
 };
 
 const WHEEL_CONFIG = {

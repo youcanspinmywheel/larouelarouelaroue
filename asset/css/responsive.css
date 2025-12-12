@@ -247,14 +247,21 @@
       margin-bottom: 8px;
     }
 
-    .fullscreen-btn {
+    .top-right-buttons {
       right: 75px;
+      gap: 8px;
     }
 
     .fixed-round-btn {
-      width: 50px;
-      height: 50px;
-      font-size: 24px;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+    }
+
+    .btn-undo-redo {
+      width: 45px !important;
+      height: 45px !important;
+      font-size: 18px;
     }
 
     #home-btn {
