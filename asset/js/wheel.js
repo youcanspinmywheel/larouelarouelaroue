@@ -38,10 +38,17 @@
         this.isAutoRotating = false;
         this.isSpinning = false;
         this.rainbowTime = 0;
+        
+        // Cache pour l'animation arc-en-ciel (optimisation performance)
+        this.rainbowCache = [];
+        this.rainbowCacheSize = 360; // Pré-calculer 360 couleurs
+        this.initRainbowCache();
 
-        // Audio
-        this.tickSound = new Audio(WHEEL_CONFIG.TICK_SOUND_URL);
-        this.tickSound.volume = WHEEL_CONFIG.TICK_SOUND_VOLUME;
+        // Audio - Pool d'objets Audio pour éviter les rechargements
+        this.audioPool = [];
+        this.audioPoolSize = 5; // Nombre d'instances Audio pré-chargées
+        this.currentAudioIndex = 0;
+        this.initAudioPool();
         this.lastSegmentIndex = -1;
 
         // Callbacks et état
@@ -304,10 +311,34 @@
       }
 
       /**
-       * Génère une couleur animée avec transition smooth entre les couleurs
+       * Initialise le pool d'objets Audio (optimisation performance)
        */
-      getRainbowColor(time) {
-      const colors = [
+      initAudioPool() {
+        for (let i = 0; i < this.audioPoolSize; i++) {
+          const audio = new Audio(WHEEL_CONFIG.TICK_SOUND_URL);
+          audio.volume = WHEEL_CONFIG.TICK_SOUND_VOLUME;
+          audio.preload = 'auto';
+          this.audioPool.push(audio);
+        }
+      }
+
+      /**
+       * Joue un son depuis le pool (rotation circulaire)
+       */
+      playTickSound() {
+        const audio = this.audioPool[this.currentAudioIndex];
+        audio.currentTime = 0;
+        audio.play().catch(() => {
+          // Ignorer les erreurs de lecture (autoplay policy)
+        });
+        this.currentAudioIndex = (this.currentAudioIndex + 1) % this.audioPoolSize;
+      }
+
+      /**
+       * Initialise le cache de couleurs arc-en-ciel (appelé une seule fois)
+       */
+      initRainbowCache() {
+        const colors = [
           { r: 155, g: 246, b: 255 }, // #9bf6ff - bleu clair
           { r: 198, g: 198, b: 237 }, // #c6c6ed - violet clair (transition bleu→rose)
           { r: 241, g: 151, b: 220 }, // #f197dc - rose
@@ -317,18 +348,28 @@
           { r: 205, g: 224, b: 147 }  // #cde093 - vert clair (transition jaune→bleu)
         ];
         
-        // Animation ralentie pour voir toutes les couleurs (multiplier par 0.5)
-        const position = (time * 0.5) % colors.length;
-        const index = Math.floor(position);
-        const nextIndex = (index + 1) % colors.length;
-        const blend = position - index; // Valeur entre 0 et 1 pour l'interpolation
-        
-        // Interpolation linéaire entre deux couleurs
-        const r = Math.round(colors[index].r + (colors[nextIndex].r - colors[index].r) * blend);
-        const g = Math.round(colors[index].g + (colors[nextIndex].g - colors[index].g) * blend);
-        const b = Math.round(colors[index].b + (colors[nextIndex].b - colors[index].b) * blend);
-        
-        return `rgb(${r}, ${g}, ${b})`;
+        // Pré-calculer toutes les couleurs
+        for (let i = 0; i < this.rainbowCacheSize; i++) {
+          const time = (i / this.rainbowCacheSize) * colors.length * 2; // *2 pour ralentir
+          const position = time % colors.length;
+          const index = Math.floor(position);
+          const nextIndex = (index + 1) % colors.length;
+          const blend = position - index;
+          
+          const r = Math.round(colors[index].r + (colors[nextIndex].r - colors[index].r) * blend);
+          const g = Math.round(colors[index].g + (colors[nextIndex].g - colors[index].g) * blend);
+          const b = Math.round(colors[index].b + (colors[nextIndex].b - colors[index].b) * blend);
+          
+          this.rainbowCache[i] = `rgb(${r}, ${g}, ${b})`;
+        }
+      }
+
+      /**
+       * Récupère une couleur arc-en-ciel depuis le cache (optimisé)
+       */
+      getRainbowColor(time) {
+        const index = Math.floor((time * 10) % this.rainbowCacheSize);
+        return this.rainbowCache[index];
       }
 
       draw() {
@@ -517,12 +558,7 @@
         document.dispatchEvent(new CustomEvent('wheel:spinStart'));
 
         // Jouer le son immédiatement au démarrage du spin
-        if (this.tickSound) {
-          this.tickSound.currentTime = 0;
-          this.tickSound.play().catch(() => {
-            // Ignorer les erreurs de lecture (autoplay policy)
-          });
-        }
+        this.playTickSound();
 
         // Initialiser avec le segment actuel pour détecter le prochain changement
         this.lastSegmentIndex = this.getCurrentSegmentIndex();
@@ -554,12 +590,7 @@
           if (currentSegment !== -1 && currentSegment !== this.lastSegmentIndex) {
             this.lastSegmentIndex = currentSegment;
             // Jouer le son dès qu'on détecte un segment valide
-            if (this.tickSound) {
-              this.tickSound.currentTime = 0;
-              this.tickSound.play().catch(() => {
-                // Ignorer les erreurs de lecture (autoplay policy)
-              });
-            }
+            this.playTickSound();
           }
 
           if (t < 1) {
