@@ -108,6 +108,15 @@
     transform: scale(0.95);
   }
 
+  #home-btn:focus {
+    outline: 3px solid rgba(203, 97, 163, 0.8);
+    outline-offset: 3px;
+  }
+
+  #home-btn:focus:not(:focus-visible) {
+    outline: none;
+  }
+
   .home-img {
     width: 100%;
     height: 100%;
@@ -155,6 +164,15 @@
 
   #note-tab:active {
     transform: scale(0.95);
+  }
+
+  #note-tab:focus {
+    outline: 3px solid rgba(203, 97, 163, 0.8);
+    outline-offset: 3px;
+  }
+
+  #note-tab:focus:not(:focus-visible) {
+    outline: none;
   }
 
   #note-tab img {

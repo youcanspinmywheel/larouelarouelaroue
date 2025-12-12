@@ -54,6 +54,15 @@
     transform: scale(0.95);
   }
 
+  .fixed-round-btn:focus {
+    outline: 3px solid rgba(203, 97, 163, 0.8);
+    outline-offset: 3px;
+  }
+
+  .fixed-round-btn:focus:not(:focus-visible) {
+    outline: none;
+  }
+
   /* Overlay */
   .overlay {
     position: fixed;

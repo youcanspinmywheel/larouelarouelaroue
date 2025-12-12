@@ -398,6 +398,15 @@
     cursor: not-allowed;
   }
 
+  .button-spin-it:focus {
+    outline: 3px solid #cb61a3;
+    outline-offset: 5px;
+  }
+
+  .button-spin-it:focus:not(:focus-visible) {
+    outline: none;
+  }
+
   .wheel-option-checkbox {
     width: 20px;
     height: 20px;

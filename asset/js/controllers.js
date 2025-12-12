@@ -141,14 +141,28 @@
           });
         }
 
-        // Bouton de spin
+        // Bouton de spin - clic
         this.spinButton.addEventListener('click', () => {
-          // Désactiver le bouton et les contrôles pendant le spin
-          this.spinButton.disabled = true;
-          this.setControlsDisabled(true);
-          this.wheel.onSpinEnd = (winner) => this.showResult(winner);
-          this.wheel.spin();
+          this.handleSpin();
         });
+
+        // Bouton de spin - navigation clavier (Entrée ou Espace)
+        this.spinButton.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            this.handleSpin();
+          }
+        });
+      }
+
+      handleSpin() {
+        if (this.spinButton.disabled) return;
+        
+        // Désactiver le bouton et les contrôles pendant le spin
+        this.spinButton.disabled = true;
+        this.setControlsDisabled(true);
+        this.wheel.onSpinEnd = (winner) => this.showResult(winner);
+        this.wheel.spin();
       }
 
       showResult(winner) {
