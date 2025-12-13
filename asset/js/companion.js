@@ -28,6 +28,22 @@ class Companion {
     this.peekTimer = null; // Timer pour l'animation peekaboo
     this.currentExpression = 'neutral';
     
+    // Système de besoins (Tamagotchi-like)
+    this.needs = {
+      happiness: 100, // 0-100
+      hunger: 50,     // 0-100 (plus haut = moins faim)
+      energy: 100,    // 0-100
+      lastUpdate: Date.now()
+    };
+    
+    // Jeu de rapidité
+    this.quickClickGame = {
+      active: false,
+      timeout: null,
+      success: false
+    };
+    
+    
     this.init();
   }
 
@@ -39,9 +55,13 @@ class Companion {
     // Détecter l'activité utilisateur globale
     ['mousemove', 'click', 'keydown', 'scroll'].forEach(event => {
       document.addEventListener(event, () => {
-        if (this.isActive) this.resetInactivityTimer();
+        if (this.isActive) {
+          this.resetInactivityTimer();
+          this.updateNeeds('activity');
+        }
       });
     });
+    
   }
 
   toggleCompanion() {
@@ -82,7 +102,8 @@ class Companion {
     document.body.appendChild(this.companion);
 
     this.x = window.innerWidth / 2;
-    this.y = window.innerHeight - 100;
+    // Position : 120px du bas pour être visible mais pas trop haut
+    this.y = window.innerHeight - 120;
     this.updatePosition();
 
     // Animation d'apparition
@@ -95,9 +116,17 @@ class Companion {
     // Events internes et globaux
     this.bindEvents();
     
+    // Créer le panneau de soins (caché par défaut)
+    this.createCarePanel();
+    
     // Démarrer le cycle de vie
     this.startLifeCycle();
     this.setExpression('happy');
+    
+    // Jeu de rapidité à l'invocation (30% de chance)
+    if (Math.random() < 0.3) {
+      setTimeout(() => this.startQuickClickGame(), 1500);
+    }
     
     const spawnPhrases = [
       "Kakou kakou",
@@ -108,6 +137,9 @@ class Companion {
       "Kakou kakou ! On y va ?"
     ];
     this.say(spawnPhrases[Math.floor(Math.random() * spawnPhrases.length)]);
+    
+    // Démarrer la gestion des besoins
+    this.startNeedsSystem();
     
     // Revenir à neutre après un moment
     setTimeout(() => this.setExpression('neutral'), 2000);
@@ -129,6 +161,26 @@ class Companion {
     // Clic simple (si pas drag)
     this.companion.addEventListener('click', (e) => {
       if (!this.isDragging) {
+        // Si le compagnon joue à cache-cache, le trouver
+        if (this.state === 'peekaboo') {
+          this.endPeekaboo("Tu m'as trouvé !");
+          return;
+        }
+        
+        // Si le compagnon dort, le réveiller
+        if (this.state === 'sleep') {
+          this.wakeUp();
+          this.startLifeCycle();
+          this.say("Je suis réveillé ! 😊");
+          return;
+        }
+        
+        // Si le jeu de rapidité est actif, ne pas ouvrir le panneau
+        if (!this.quickClickGame.active) {
+          // Ouvrir/fermer le panneau de soins
+          this.toggleCarePanel();
+        }
+        // Toujours gérer le clic normal (animations, etc.)
         this.handleClick(e);
       }
     });
@@ -146,6 +198,8 @@ class Companion {
     document.addEventListener('wheel:spinStart', () => {
       if (this.isActive && !this.isDragging) {
         this.reactToSpinStart();
+        // Réagir aux sons de la roue (augmenter le bonheur)
+        this.updateNeeds('activity');
       }
     });
 
@@ -161,6 +215,8 @@ class Companion {
             this.wakeUp();
             this.setExpression('happy');
             this.jump();
+            // Ajouter une option = nourrir un peu le compagnon
+            this.updateNeeds('feed');
             const phrases = ["Miam, du drama !", "Ouh ça pique !", "J'adore !", "Encore !"];
             this.say(phrases[Math.floor(Math.random() * phrases.length)]);
             setTimeout(() => {
@@ -443,9 +499,18 @@ class Companion {
     this.isDragging = false;
     this.companion.classList.remove('dragged');
     
-    if (this.y < window.innerHeight - 100) {
+    // Limite minimale : 120px du bas pour rester visible
+    const minY = window.innerHeight - 120;
+    // Tolérance de 10px pour éviter les chutes inutiles dues aux arrondis
+    if (this.y < minY - 10) {
+      // Seulement si vraiment au-dessus de la position minimale
       this.fallToFloor();
     } else {
+      // S'assurer que la position est correcte
+      if (this.y < minY) {
+        this.y = minY;
+        this.updatePosition();
+      }
       this.state = 'idle';
       this.setExpression('neutral');
       this.startLifeCycle();
@@ -454,13 +519,20 @@ class Companion {
 
   fallToFloor() {
     this.setExpression('surprised');
-    const floorY = window.innerHeight - 100;
+    // Position finale : 120px du bas pour être visible mais pas trop haut
+    const floorY = window.innerHeight - 120;
+    
     const animate = () => {
       if (this.y < floorY) {
         this.y += 15;
+        // S'assurer qu'on ne dépasse jamais floorY
+        if (this.y > floorY) {
+          this.y = floorY;
+        }
         this.updatePosition();
         requestAnimationFrame(animate);
       } else {
+        // S'assurer que la position finale est exactement floorY
         this.y = floorY;
         this.updatePosition();
         this.say("Ouf !");
@@ -482,6 +554,15 @@ class Companion {
 
   updatePosition() {
     if (this.companion) {
+      // Exception pour le peekaboo : on peut aller jusqu'en bas de l'écran
+      if (this.state !== 'peekaboo') {
+        // S'assurer que le compagnon ne dépasse jamais le bas de l'écran
+        const maxY = window.innerHeight - 120; // 120px du bas
+        if (this.y > maxY) {
+          this.y = maxY;
+        }
+      }
+      
       this.companion.style.left = `${this.x}px`;
       this.companion.style.top = `${this.y}px`;
       
@@ -496,6 +577,11 @@ class Companion {
     if (!this.isActive || this.isDragging) return;
 
     this.wakeUp();
+    
+    // S'assurer qu'on n'est pas en état "surprised" si on est en idle
+    if (this.state === 'idle' && this.currentExpression === 'surprised') {
+      this.setExpression('neutral');
+    }
 
     if (Math.random() < 0.05) {
       this.triggerGlitch();
@@ -503,7 +589,8 @@ class Companion {
     }
 
     // Plus de "idle" pour calmer le jeu, et retrait de "disco" (réservé au clic)
-    const actions = ['idle', 'idle', 'idle', 'idle', 'walk', 'walk', 'roll', 'sleep', 'promote', 'talk', 'peekaboo'];
+    // peekaboo un peu plus fréquent (2 fois sur ~15 actions)
+    const actions = ['idle', 'idle', 'idle', 'idle', 'walk', 'walk', 'walk', 'roll', 'sleep', 'promote', 'talk', 'talk', 'peekaboo', 'peekaboo'];
     const nextAction = actions[Math.floor(Math.random() * actions.length)];
     
     // Pause beaucoup plus longue entre les actions (5 à 10 secondes)
@@ -541,15 +628,23 @@ class Companion {
         this.actionTimer = setTimeout(() => this.decideNextAction(), 5000);
         break;
       default: // idle
+        // Toujours réinitialiser à neutral en idle pour éviter les expressions surprises
         this.setExpression('neutral');
+        this.state = 'idle';
         this.actionTimer = setTimeout(() => this.decideNextAction(), duration);
         break;
     }
   }
 
-  goToSleep() {
+  goToSleep(manualSleep = false) {
     this.state = 'sleep';
     this.setExpression('sleep');
+    
+    // Arrêter le cycle de vie pendant le sommeil
+    this.stopLifeCycle();
+    
+    // Ajouter la classe sleep pour le style
+    this.companion.classList.add('sleeping');
     
     this.zzzInterval = setInterval(() => {
       if (this.state !== 'sleep') {
@@ -565,11 +660,24 @@ class Companion {
         if (zzz.parentNode) zzz.parentNode.removeChild(zzz);
       }, 2000);
     }, 800);
+    
+    // Durée du sommeil : plus long si c'est manuel (bouton), sinon automatique (court)
+    const sleepDuration = manualSleep ? 30000 : 10000; // 30 secondes si manuel, 10 secondes si automatique
+    
+    // Se réveiller automatiquement après la durée définie
+    setTimeout(() => {
+      if (this.state === 'sleep') {
+        this.wakeUp();
+        this.startLifeCycle();
+      }
+    }, sleepDuration);
   }
 
   wakeUp() {
     if (this.state === 'sleep') {
-        this.setExpression('neutral');
+      this.state = 'idle';
+      this.setExpression('neutral');
+      this.companion.classList.remove('sleeping');
     }
     clearInterval(this.zzzInterval);
     const zzzs = this.companion.querySelectorAll('.companion-zzz');
@@ -592,6 +700,9 @@ class Companion {
 
   playPeekaboo() {
     this.state = 'peekaboo';
+    
+    // Fermer le panneau de soins s'il est ouvert
+    this.closeCarePanel();
     
     // Position : Très bas (on ne voit que le haut du crâne)
     const deepHideY = window.innerHeight - 5; 
@@ -651,18 +762,33 @@ class Companion {
       clearTimeout(this.actionTimer);
       clearTimeout(this.peekTimer); // Arrêter l'observation
       
-      // Remonter définitivement
+      // Arrêter la boucle peekaboo
+      this.peekTimer = null;
+      
+      // Remonter définitivement à la position normale en bas de l'écran
       this.companion.style.transition = 'top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-      this.y = window.innerHeight - 100;
-      this.updatePosition();
+      
+      // Réinitialiser l'état AVANT de changer la position pour que updatePosition() applique la limite normale
+      this.state = 'idle';
+      
+      // Revenir à la position normale (120px du bas pour être visible)
+      this.y = window.innerHeight - 120;
+      
+      // Forcer la mise à jour de la position immédiatement
+      if (this.companion) {
+        this.companion.style.top = `${this.y}px`;
+        // Forcer un reflow pour s'assurer que le changement est appliqué
+        void this.companion.offsetHeight;
+      }
+      
+      this.setExpression('happy');
       
       this.jump();
       this.say(message);
-      this.state = 'idle';
-      this.setExpression('happy');
 
       setTimeout(() => {
           this.companion.style.transition = '';
+          this.setExpression('neutral');
           this.startLifeCycle();
       }, 2000);
   }
@@ -792,6 +918,7 @@ class Companion {
     clearTimeout(this.actionTimer);
     clearTimeout(this.inactivityTimer);
     clearTimeout(this.peekTimer);
+    clearInterval(this.needsInterval);
     cancelAnimationFrame(this.animationFrame);
   }
 
@@ -835,6 +962,9 @@ class Companion {
     this.summonBtn.classList.remove('active');
     this.stopLifeCycle();
     this.wakeUp();
+    
+    // Supprimer le panneau de soins
+    this.removeCarePanel();
 
     this.companion.style.transform = 'scale(0)';
     setTimeout(() => {
@@ -844,4 +974,318 @@ class Companion {
       this.companion = null;
     }, 300);
   }
+
+  // ========================================
+  // SYSTÈME DE BESOINS (Tamagotchi)
+  // ========================================
+
+  startNeedsSystem() {
+    // Mettre à jour les besoins toutes les 30 secondes
+    this.needsInterval = setInterval(() => {
+      if (this.isActive) {
+        this.updateNeeds('time');
+      }
+    }, 30000);
+  }
+
+  updateNeeds(reason) {
+    const now = Date.now();
+    const elapsed = (now - this.needs.lastUpdate) / 1000; // en secondes
+    
+    if (reason === 'time') {
+      // Diminuer progressivement les besoins avec le temps
+      this.needs.hunger = Math.max(0, this.needs.hunger - 0.5);
+      this.needs.energy = Math.max(0, this.needs.energy - 0.3);
+      
+      // Le bonheur diminue si les autres besoins sont bas
+      if (this.needs.hunger < 30 || this.needs.energy < 30) {
+        this.needs.happiness = Math.max(0, this.needs.happiness - 0.5);
+      }
+    } else if (reason === 'activity') {
+      // L'activité augmente légèrement le bonheur
+      this.needs.happiness = Math.min(100, this.needs.happiness + 0.2);
+    } else if (reason === 'feed') {
+      this.needs.hunger = Math.min(100, this.needs.hunger + 30);
+      this.needs.happiness = Math.min(100, this.needs.happiness + 10);
+    } else if (reason === 'play') {
+      this.needs.happiness = Math.min(100, this.needs.happiness + 20);
+      this.needs.energy = Math.max(0, this.needs.energy - 10);
+    } else if (reason === 'cuddle') {
+      // Les câlins augmentent beaucoup le bonheur sans consommer d'énergie
+      this.needs.happiness = Math.min(100, this.needs.happiness + 25);
+    } else if (reason === 'sleep') {
+      this.needs.energy = Math.min(100, this.needs.energy + 50);
+    }
+    
+    this.needs.lastUpdate = now;
+    this.updateCarePanel();
+    this.checkNeedsStatus();
+  }
+
+  checkNeedsStatus() {
+    if (!this.isActive) return;
+    
+    // Réactions selon les besoins
+    if (this.needs.hunger < 20) {
+      if (Math.random() < 0.1) { // 10% de chance
+        this.setExpression('sad');
+        this.say("J'ai faim... 🍑");
+        setTimeout(() => this.setExpression('neutral'), 2000);
+      }
+    }
+    
+    if (this.needs.energy < 20 && this.state !== 'sleep') {
+      if (Math.random() < 0.15) { // 15% de chance
+        this.goToSleep();
+      }
+    }
+    
+    if (this.needs.happiness < 30) {
+      if (Math.random() < 0.1) { // 10% de chance
+        this.setExpression('sad');
+        this.say("Je m'ennuie...");
+        setTimeout(() => this.setExpression('neutral'), 2000);
+      }
+    }
+  }
+
+  // ========================================
+  // PANNEAU DE SOINS
+  // ========================================
+
+  createCarePanel() {
+    if (!this.companion) return;
+    
+    const carePanel = document.createElement('div');
+    carePanel.id = 'companion-care-panel';
+    carePanel.className = 'companion-care-panel';
+    carePanel.style.display = 'none';
+    carePanel.innerHTML = `
+      <div class="care-stats">
+        <div class="care-stat">
+          <i class="fa-solid fa-heart"></i>
+          <div class="care-bar">
+            <div class="care-bar-fill" id="happiness-bar" style="width: 100%"></div>
+          </div>
+        </div>
+        <div class="care-stat">
+          <i class="fa-solid fa-utensils"></i>
+          <div class="care-bar">
+            <div class="care-bar-fill" id="hunger-bar" style="width: 50%"></div>
+          </div>
+        </div>
+        <div class="care-stat">
+          <i class="fa-solid fa-bolt"></i>
+          <div class="care-bar">
+            <div class="care-bar-fill" id="energy-bar" style="width: 100%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="care-actions">
+        <button class="care-btn" id="feed-btn" title="Nourrir">
+          <i class="fa-solid fa-apple-whole"></i>
+        </button>
+        <button class="care-btn" id="cuddle-btn" title="Faire un câlin">
+          <i class="fa-solid fa-heart"></i>
+        </button>
+        <button class="care-btn" id="sleep-btn" title="Faire dormir">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    `;
+    
+    this.companion.appendChild(carePanel);
+    
+    // Attacher les événements
+    document.getElementById('feed-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.feed();
+    });
+    document.getElementById('cuddle-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.cuddle();
+    });
+    document.getElementById('sleep-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.sleep();
+    });
+  }
+
+  toggleCarePanel() {
+    const panel = document.getElementById('companion-care-panel');
+    if (panel) {
+      const isVisible = panel.style.display !== 'none';
+      panel.style.display = isVisible ? 'none' : 'block';
+      
+      // Fermer si on clique ailleurs
+      if (!isVisible) {
+        setTimeout(() => {
+          const closeHandler = (e) => {
+            if (!panel.contains(e.target) && !this.companion.contains(e.target)) {
+              panel.style.display = 'none';
+              document.removeEventListener('click', closeHandler);
+            }
+          };
+          document.addEventListener('click', closeHandler);
+        }, 10);
+      }
+    }
+  }
+
+  closeCarePanel() {
+    const panel = document.getElementById('companion-care-panel');
+    if (panel) {
+      panel.style.display = 'none';
+    }
+  }
+
+  removeCarePanel() {
+    const panel = document.getElementById('companion-care-panel');
+    if (panel) panel.remove();
+  }
+
+  updateCarePanel() {
+    if (!this.companion) return;
+    
+    const happinessBar = document.getElementById('happiness-bar');
+    const hungerBar = document.getElementById('hunger-bar');
+    const energyBar = document.getElementById('energy-bar');
+    
+    if (happinessBar) {
+      happinessBar.style.width = `${this.needs.happiness}%`;
+      happinessBar.style.backgroundColor = this.needs.happiness > 50 ? '#4ecdc4' : '#ff6b6b';
+    }
+    if (hungerBar) {
+      hungerBar.style.width = `${this.needs.hunger}%`;
+      hungerBar.style.backgroundColor = this.needs.hunger > 50 ? '#95e1d3' : '#ffa07a';
+    }
+    if (energyBar) {
+      energyBar.style.width = `${this.needs.energy}%`;
+      energyBar.style.backgroundColor = this.needs.energy > 50 ? '#ffe66d' : '#ffd93d';
+    }
+  }
+
+  feed() {
+    if (!this.isActive) return;
+    this.updateNeeds('feed');
+    this.setExpression('happy');
+    this.jump();
+    const phrases = [
+      "Miam ! Merci ! 🍑",
+      "C'est bon !",
+      "J'adore !",
+      "Encore ! Encore !"
+    ];
+    this.say(phrases[Math.floor(Math.random() * phrases.length)]);
+    setTimeout(() => this.setExpression('neutral'), 2000);
+  }
+
+  cuddle() {
+    if (!this.isActive) return;
+    this.updateNeeds('cuddle');
+    this.setExpression('happy');
+    
+    // Animation de câlin (mouvement doux vers le haut puis retour)
+    this.companion.style.transition = 'transform 0.3s ease';
+    this.companion.style.transform = 'scale(1.1)';
+    
+    setTimeout(() => {
+      this.companion.style.transform = 'scale(1)';
+    }, 300);
+    
+    // Spawn des cœurs
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        const heartX = this.x + (Math.random() - 0.5) * 40;
+        const heartY = this.y - 20 - Math.random() * 20;
+        this.spawnHeart(heartX, heartY);
+      }, i * 200);
+    }
+    
+    const phrases = [
+      "Aww, merci ! 💕",
+      "J'adore les câlins !",
+      "C'est si doux !",
+      "Encore un câlin ! 🥰",
+      "Tu es trop gentil(le) !"
+    ];
+    this.say(phrases[Math.floor(Math.random() * phrases.length)]);
+    setTimeout(() => {
+      this.companion.style.transition = '';
+      this.setExpression('neutral');
+    }, 2000);
+  }
+
+  sleep() {
+    if (!this.isActive || this.state === 'sleep') return;
+    this.updateNeeds('sleep');
+    this.goToSleep(true); // true = sommeil manuel (plus long)
+    this.say("Bonne nuit... 😴");
+  }
+
+  // ========================================
+  // JEU DE RAPIDITÉ
+  // ========================================
+
+  startQuickClickGame() {
+    if (!this.isActive || this.quickClickGame.active) return;
+    
+    this.quickClickGame.active = true;
+    this.setExpression('surprised');
+    this.say("Attrape-moi si tu peux ! 👀");
+    
+    // Le compagnon devient cliquable pendant 3 secondes
+    this.companion.style.cursor = 'pointer';
+    this.companion.classList.add('quick-click-target');
+    
+    // Timer : le jeu se termine après 3 secondes
+    this.quickClickGame.timeout = setTimeout(() => {
+      if (this.quickClickGame.active && !this.quickClickGame.success) {
+        this.endQuickClickGame(false);
+      }
+    }, 3000);
+    
+    // Écouter le clic
+    const clickHandler = (e) => {
+      if (this.quickClickGame.active) {
+        e.stopPropagation();
+        this.endQuickClickGame(true);
+        this.companion.removeEventListener('click', clickHandler);
+      }
+    };
+    
+    this.companion.addEventListener('click', clickHandler, { once: true });
+  }
+
+  endQuickClickGame(success) {
+    this.quickClickGame.active = false;
+    this.quickClickGame.success = success;
+    this.companion.style.cursor = '';
+    this.companion.classList.remove('quick-click-target');
+    
+    if (this.quickClickGame.timeout) {
+      clearTimeout(this.quickClickGame.timeout);
+    }
+    
+    if (success) {
+      this.setExpression('happy');
+      this.jump();
+      this.updateNeeds('play');
+      const phrases = [
+        "Tu m'as eu ! 🎉",
+        "Bravo !",
+        "Tu es rapide !",
+        "Gagné ! ✨"
+      ];
+      this.say(phrases[Math.floor(Math.random() * phrases.length)]);
+    } else {
+      this.setExpression('neutral');
+      this.say("Trop lent ! 😏");
+    }
+    
+    setTimeout(() => {
+      this.setExpression('neutral');
+    }, 2000);
+  }
+
 }
