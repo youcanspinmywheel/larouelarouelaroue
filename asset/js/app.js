@@ -305,6 +305,12 @@
 
     // Démarrage de l'application
     document.addEventListener('DOMContentLoaded', () => {
+      // Mettre à jour l'année du copyright dynamiquement
+      const yearElements = document.querySelectorAll('#copyright-year');
+      yearElements.forEach(element => {
+        element.textContent = new Date().getFullYear();
+      });
+      
       new BackgroundManager();
       window.wheelAppInstance = new WheelApp();
       new FullscreenManager();
