@@ -149,6 +149,51 @@
     transform: translateX(0);
   }
 
+  #peaches-wheels-link {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #f496ad;
+    cursor: pointer;
+    z-index: 2001;
+    transition: transform 0.1s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+  }
+
+  #peaches-wheels-link:hover {
+    transform: scale(1.1);
+    color: #f496ad;
+  }
+
+  #peaches-wheels-link i {
+    font-size: 20px;
+  }
+
+  #peaches-wheels-link span {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  #peaches-wheels-link:active {
+    transform: scale(0.85);
+  }
+
+  #peaches-wheels-link:focus {
+    outline: 3px solid rgba(203, 97, 163, 0.8);
+    outline-offset: 2px;
+  }
+
+  #peaches-wheels-link:focus:not(:focus-visible) {
+    outline: none;
+  }
+
   #side-note-close {
     position: absolute;
     top: 15px;
