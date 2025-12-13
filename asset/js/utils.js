@@ -9,12 +9,13 @@ const Utils = {
    */
   normalizeOption(opt) {
     if (typeof opt === 'string') {
-      return { text: opt, boosted: false, multiplier: 1 };
+      return { text: opt, boosted: false, multiplier: 1, enabled: true };
     }
     return {
       text: opt.text,
       boosted: !!opt.boosted,
-      multiplier: opt.multiplier && opt.multiplier > 0 ? opt.multiplier : 1
+      multiplier: opt.multiplier && opt.multiplier > 0 ? opt.multiplier : 1,
+      enabled: opt.enabled !== false // Préserver l'état enabled (true par défaut)
     };
   },
 

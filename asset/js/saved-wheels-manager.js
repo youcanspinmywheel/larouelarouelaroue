@@ -134,6 +134,7 @@
             text: opt.text,
             boosted: !!opt.boosted,
             multiplier: opt.multiplier && opt.multiplier > 0 ? opt.multiplier : 1,
+            enabled: opt.enabled !== false, // Sauvegarder l'état enabled (true par défaut)
           })),
         };
       }
@@ -206,6 +207,7 @@
             text: opt.text,
             boosted: !!opt.boosted,
             multiplier: opt.multiplier || 1,
+            enabled: opt.enabled !== false,
           })),
         });
         
@@ -219,6 +221,7 @@
             text: opt.text,
             boosted: !!opt.boosted,
             multiplier: opt.multiplier || 1,
+            enabled: opt.enabled !== false,
           })),
         });
       }
@@ -308,7 +311,16 @@
       performLoadWheel(wheelData) {
         this.currentSavedId = wheelData.id;
         this.wheel.usesDefaultOptions = false;
-        this.wheel.setOptions(wheelData.options || []);
+        
+        // S'assurer que toutes les options sont activées par défaut lors du chargement
+        const optionsWithEnabled = (wheelData.options || []).map(opt => ({
+          text: opt.text || '',
+          boosted: !!opt.boosted,
+          multiplier: opt.multiplier && opt.multiplier > 0 ? opt.multiplier : 1,
+          enabled: true // Toujours activer toutes les options lors du chargement
+        }));
+        
+        this.wheel.setOptions(optionsWithEnabled);
         // Réinitialiser le slider à 1 pour chaque nouvelle roue chargée
         this.resetSuspenseSlider();
         this.updateLastSavedState();
@@ -381,6 +393,7 @@
             text: typeof opt === 'string' ? opt : opt.text,
             boosted: false,
             multiplier: 1,
+            enabled: true, // Par défaut toutes les options sont activées
           })),
         };
 
@@ -419,6 +432,7 @@
               text: opt.text,
               boosted: !!opt.boosted,
               multiplier: opt.multiplier && opt.multiplier > 0 ? opt.multiplier : 1,
+              enabled: opt.enabled !== false, // Sauvegarder l'état enabled (true par défaut)
             })),
           };
 
@@ -480,6 +494,7 @@
               text: opt.text || '',
               boosted: !!opt.boosted,
               multiplier: opt.multiplier && opt.multiplier > 0 ? opt.multiplier : 1,
+              enabled: true, // Toujours activer toutes les options lors de l'import
             })),
           };
 
