@@ -74,7 +74,10 @@ class Companion {
         </div>
       </div>
       <div class="companion-shadow"></div>
-      <div class="companion-bubble">Coucou !</div>
+      <div class="companion-bubble">
+        <span class="bubble-text">Coucou !</span>
+        <i class="fa-solid fa-sparkles companion-sparkles"></i>
+      </div>
     `;
     document.body.appendChild(this.companion);
 
@@ -95,7 +98,16 @@ class Companion {
     // Démarrer le cycle de vie
     this.startLifeCycle();
     this.setExpression('happy');
-    this.say("Kakou kakou");
+    
+    const spawnPhrases = [
+      "Kakou kakou",
+      "Ouais c'est michel",
+      "Coucou ! C'est moi !",
+      "Me revoilà ! 🍑",
+      "Salut ! Prête à tourner ?",
+      "Kakou kakou ! On y va ?"
+    ];
+    this.say(spawnPhrases[Math.floor(Math.random() * spawnPhrases.length)]);
     
     // Revenir à neutre après un moment
     setTimeout(() => this.setExpression('neutral'), 2000);
@@ -170,6 +182,63 @@ class Companion {
             }, 2000);
         }
     });
+
+    document.addEventListener('wheel:optionRemovedFromResult', () => {
+        if (this.isActive) {
+            this.stopLifeCycle();
+            this.wakeUp();
+            this.setExpression('happy');
+            const phrases = [
+                "Voilà, c'est fait !",
+                "C'est réglé !",
+                "Parfait !",
+                "Et voilà ! ✨",
+                "C'est dans la poche !"
+            ];
+            this.say(phrases[Math.floor(Math.random() * phrases.length)]);
+            setTimeout(() => {
+                this.setExpression('neutral');
+                this.startLifeCycle();
+            }, 2000);
+        }
+    });
+
+    document.addEventListener('wheel:optionToggled', (e) => {
+        if (this.isActive && e.detail) {
+            this.stopLifeCycle();
+            this.wakeUp();
+            
+            if (e.detail.enabled) {
+                // Option réactivée
+                this.setExpression('happy');
+                const phrases = [
+                    "Ah, elle revient !",
+                    "On la retrouve !",
+                    "Elle est de retour ! ✨",
+                    "C'est reparti !"
+                ];
+                this.say(phrases[Math.floor(Math.random() * phrases.length)]);
+            } else {
+                // Option désactivée (cachée)
+                this.setExpression('surprised');
+                const phrases = [
+                    "Où elle est passée ? 👀",
+                    "Elle se cache maintenant !",
+                    "Chut... elle dort 😴",
+                    "Elle fait la timide !",
+                    "Hop, elle disparaît ! ✨",
+                    "Elle joue à cache-cache !",
+                    "Où est-elle ? 🤔"
+                ];
+                this.say(phrases[Math.floor(Math.random() * phrases.length)]);
+            }
+            
+            setTimeout(() => {
+                this.setExpression('neutral');
+                this.startLifeCycle();
+            }, 2000);
+        }
+    });
   }
 
   handleClick(e) {
@@ -197,7 +266,7 @@ class Companion {
   spawnHeart(x, y) {
     const heart = document.createElement('div');
     heart.className = 'click-heart';
-    heart.textContent = '❤️';
+    heart.innerHTML = '<i class="fa-solid fa-heart"></i>';
     heart.style.left = `${x}px`;
     heart.style.top = `${y}px`;
     document.body.appendChild(heart);
@@ -239,7 +308,21 @@ class Companion {
     this.wakeUp();
     this.jump();
     this.setExpression('angry'); // Ou déterminé
-    this.say("Chargez !! 🔥");
+    
+    const phrases = [
+      "Chargez !! 🔥",
+      "Allez, tourne ! 💫",
+      "Ça va être épique !",
+      "Suspense maximum !",
+      "Je croise les doigts ! 🤞",
+      "C'est parti ! 🎡",
+      "Roule ma poule !",
+      "On y va ! 🚀",
+      "Le moment de vérité !",
+      "Ça tourne, ça tourne !",
+      "J'ai hâte de voir ! 👀"
+    ];
+    this.say(phrases[Math.floor(Math.random() * phrases.length)]);
     
     setTimeout(() => {
         this.setExpression('dizzy');
@@ -253,7 +336,25 @@ class Companion {
     this.state = 'jump';
     this.companion.classList.add('jump');
     this.setExpression('happy');
-    this.say("Wooooow ! 🎉");
+    
+    const phrases = [
+      "Wooooow ! 🎉",
+      "Incroyable ! ✨",
+      "C'est lui ! C'est lui !",
+      "Bravo ! 🎊",
+      "Gagné ! 🏆",
+      "Yes ! C'est le bon !",
+      "Parfait ! 🎯",
+      "J'adore ce choix !",
+      "Excellent ! 🌟",
+      "C'est celui-là ! 🎪",
+      "Magnifique ! 💫",
+      "Top choix ! 👏",
+      "Génial ! 🎨",
+      "Parfait timing ! ⏰",
+      "J'aime bien celui-là ! ❤️"
+    ];
+    this.say(phrases[Math.floor(Math.random() * phrases.length)]);
     
     let jumps = 0;
     const jumpInterval = setInterval(() => {
@@ -662,7 +763,24 @@ class Companion {
   say(text) {
     const bubble = this.companion.querySelector('.companion-bubble');
     if (bubble) {
-      bubble.innerHTML = text;
+      const textSpan = bubble.querySelector('.bubble-text');
+      const sparkles = bubble.querySelector('.companion-sparkles');
+      
+      if (textSpan) {
+        textSpan.innerHTML = text;
+      }
+      
+      // Ajouter des effets selon le type de message
+      if (text.includes('🎉') || text.includes('Wooooow')) {
+        if (sparkles) sparkles.className = 'fa-solid fa-sparkles companion-sparkles sparkle-gold';
+      } else if (text.includes('🔥') || text.includes('Chargez')) {
+        if (sparkles) sparkles.className = 'fa-solid fa-fire companion-sparkles sparkle-fire';
+      } else if (text.includes('❤️') || text.includes('Code créateur')) {
+        if (sparkles) sparkles.className = 'fa-solid fa-heart companion-sparkles sparkle-heart';
+      } else {
+        if (sparkles) sparkles.className = 'fa-solid fa-sparkles companion-sparkles';
+      }
+      
       bubble.classList.add('show');
       setTimeout(() => {
         bubble.classList.remove('show');

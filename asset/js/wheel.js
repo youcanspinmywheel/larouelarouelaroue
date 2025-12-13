@@ -271,6 +271,10 @@
               this.applySuspenseMultiplier();
               // Notifier l'historique
               document.dispatchEvent(new CustomEvent('wheel:stateChanged', { detail: 'toggle' }));
+              // Notifier le compagnon avec l'état de l'option
+              document.dispatchEvent(new CustomEvent('wheel:optionToggled', { 
+                detail: { enabled: opt.enabled, text: opt.text } 
+              }));
             });
             
             // Appliquer l'état initial

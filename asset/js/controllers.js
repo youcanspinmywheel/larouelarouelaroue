@@ -177,6 +177,9 @@
             if (typeof this.wheel.lastWinnerIndex === 'number') {
               this.wheel.removeOption(this.wheel.lastWinnerIndex);
               this.hideResult();
+              
+              // Notifier le compagnon
+              document.dispatchEvent(new CustomEvent('wheel:optionRemovedFromResult'));
             }
           });
         }
